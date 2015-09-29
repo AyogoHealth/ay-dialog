@@ -96,7 +96,16 @@ angular.module('ngDialog', ['ngAnimate'])
     }
 
 
-    function doPositioning(el, anchor, modal) {
+    function getScrollOffset() {
+      if (document.scrollingElement) {
+        return document.scrollingElement.scrollTop;
+      } else {
+        return document.documentElement.scrollTop + document.body.scrollTop;
+      }
+    }
+
+
+    function doPositioning(el, anchor, scrollOffset, modal) {
         if (anchor) {
             console.warn('Magic Alignment mode for <dialog> unsupported!');
         }
@@ -107,26 +116,24 @@ angular.module('ngDialog', ['ngAnimate'])
         }
 
         // Centered Alignment
-        var scrollTop = (document.scrollingElement && document.scrollingElement.scrollTop) || document.body.scrollTop || document.documentElement.scrollTop;
-        var topValue = scrollTop + (window.innerHeight - el.offsetHeight) / 2;
+        var topValue = scrollOffset + (window.innerHeight - el.offsetHeight) / 2;
 
-        el.style.top = Math.max(scrollTop, topValue) + 'px';
+        el.style.top = Math.max(scrollOffset, topValue) + 'px';
         el.style.zIndex = kZIndexMax;
     }
 
 
-    function blockScrolling() {
+    function blockScrolling(offset) {
         var htmlNode = document.documentElement;
         var prevHtmlStyle = htmlNode.getAttribute('style') || '';
         var prevBodyStyle = document.body.getAttribute('style') || '';
 
-        var scrollOffset = (document.scrollingElement && document.scrollingElement.scrollTop) || htmlNode.scrollTop + document.body.scrollTop;
         var clientWidth = document.body.clientWidth;
 
         if (document.body.scrollHeight > htmlNode.clientHeight) {
             document.body.style.position = 'fixed';
             document.body.style.width = '100%';
-            document.body.style.top = -scrollOffset + 'px';
+            document.body.style.top = -offset + 'px';
 
             htmlNode.style.overflowY = 'scroll';
         }
@@ -140,9 +147,9 @@ angular.module('ngDialog', ['ngAnimate'])
             htmlNode.setAttribute('style', prevHtmlStyle);
 
             if (document.scrollingElement) {
-                document.scrollingElement.scrollTop = scrollOffset;
+                document.scrollingElement.scrollTop = offset;
             } else {
-                document.body.scrollTop = scrollOffset;
+                window.scrollTo(0, offset);
             }
         }
     }
@@ -276,9 +283,11 @@ angular.module('ngDialog', ['ngAnimate'])
                     return;
                 }
 
+                var offset = getScrollOffset();
+
                 el.open = true;
 
-                doPositioning(el, anchor, false);
+                doPositioning(el, anchor, offset, false);
 
                 prevFocus = document.activeElement;
                 prevFocus.blur();
@@ -289,14 +298,20 @@ angular.module('ngDialog', ['ngAnimate'])
             // Polyfill the dialog `showModal(anchor)` method
             el.showModal = function(anchor) {
                 if (el.open) {
-                    newInvalidStateError('Modal is already open');
+                    if (typeof DOMException === 'function') {
+                        throw new DOMException('Modal is already open', 'InvalidStateError');
+                    } else {
+                        newInvalidStateError('Modal is already open');
+                    }
                 }
+
+                var offset = getScrollOffset();
 
                 el.open = true;
 
-                doPositioning(el, anchor, true);
+                doPositioning(el, anchor, offset, true);
 
-                restoreScroll = blockScrolling();
+                restoreScroll = blockScrolling(offset);
 
                 // Hack to make our backdrop work
                 el.setAttribute('open', 'modal');
