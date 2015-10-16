@@ -1,4 +1,4 @@
-// Copyright 2015 Ayogo Health Inc.
+//Copyright 2016 Ayogo Health Inc.
 
 angular.module('ngDialog', ['ngAnimate'])
 
@@ -170,17 +170,17 @@ angular.module('ngDialog', ['ngAnimate'])
             {
                 if (!addedStyles) {
                     addedStyles = true;
-
-                    // Slight hack to prevent scrolling on the body while
-                    // dialogs are open.
-                    var showModal = HTMLDialogElement.prototype.showModal;
-                    HTMLDialogElement.prototype.showModal = function(anchor) {
-                        restoreScroll = blockScrolling();
-                        dialogStack.push(el);
-
-                        return showModal.call(this, anchor);
-                    };
                 }
+
+                // Slight hack to prevent scrolling on the body while
+                // dialogs are open.
+                var showModal = HTMLDialogElement.prototype.showModal;
+                el.showModal = function(anchor) {
+                    restoreScroll = blockScrolling();
+                    dialogStack.push(el);
+
+                    return showModal.call(el, anchor);
+                };
 
                 function checkUnblockScrolling() {
                     var idx = dialogStack.indexOf(el);
@@ -283,13 +283,14 @@ angular.module('ngDialog', ['ngAnimate'])
                     return;
                 }
 
+                prevFocus = document.activeElement;
+
                 var offset = getScrollOffset();
 
                 el.open = true;
 
                 doPositioning(el, anchor, offset, false);
 
-                prevFocus = document.activeElement;
                 prevFocus.blur();
                 doFocus(el);
             };
@@ -301,9 +302,11 @@ angular.module('ngDialog', ['ngAnimate'])
                     if (typeof DOMException === 'function') {
                         throw new DOMException('Modal is already open', 'InvalidStateError');
                     } else {
-                        newInvalidStateError('Modal is already open');
+                        throw new Error('Modal is already open');
                     }
                 }
+
+                prevFocus = document.activeElement;
 
                 var offset = getScrollOffset();
 
@@ -320,7 +323,6 @@ angular.module('ngDialog', ['ngAnimate'])
 
                 dialogStack.push(el);
 
-                prevFocus = document.activeElement;
                 prevFocus.blur();
                 doFocus(el);
             };
@@ -384,25 +386,6 @@ angular.module('ngDialog', ['ngAnimate'])
                     e.preventDefault();
                 });
             });
-
-
-
-            // Helper Function:
-            // Cause a DOM Exception 11: InvalidStateError
-            function newInvalidStateError(msg) {
-                try {
-                    // HAAAAXX
-                    (new XMLHttpRequest()).setRequestHeader('Foo', 'foo');
-                } catch(err) {
-                    try {
-                        Object.defineProperty(err, 'message', {
-                            get: function() { return msg; }
-                        });
-                    } catch(e) { }
-
-                    throw err;
-                }
-            }
 
 
             // Init hack:
