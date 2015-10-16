@@ -1,4 +1,4 @@
-// Copyright 2015 Ayogo Health Inc.
+//Copyright 2016 Ayogo Health Inc.
 
 declare module 'ngDialog' {
 }
