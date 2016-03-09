@@ -1,4 +1,4 @@
-//Copyright 2016 Ayogo Health Inc.
+/*! Copyright 2016 Ayogo Health Inc. */
 
 angular.module('ngDialog', ['ngAnimate'])
 
@@ -67,7 +67,7 @@ angular.module('ngDialog', ['ngAnimate'])
         try {
             evt = new Event('cancel', { cancelable: true });
         } catch(e) {
-            evt = document.createEvent();
+            evt = $window.document.createEvent();
             evt.initEvent('cancel', false, true);
         }
 
@@ -77,31 +77,53 @@ angular.module('ngDialog', ['ngAnimate'])
     }
 
 
-    function doFocus(el) {
-        var control = el.querySelector('[autofocus]');
+    function doFocus(el, immediate) {
+        // Ewww, because "autofocus" will cause trouble for iOS :(
+        var control = el.querySelector('[dialog-autofocus]');
 
         if (control) {
-            control.focus();
+            if (immediate) {
+                control.focus();
+                return;
+            }
+
+            $window.setTimeout(function() {
+                control.focus();
+            }, 1);
             return;
         }
 
         var control = el.querySelector(FOCUS_SELECTOR);
 
         if (control) {
-            control.focus();
+            if (immediate) {
+                control.focus();
+                return;
+            }
+
+            $window.setTimeout(function() {
+                control.focus();
+            }, 1);
             return;
         }
 
-        el.focus();
+        if (immediate) {
+            el.focus();
+            return;
+        }
+
+        $window.setTimeout(function() {
+            el.focus();
+        }, 1);
     }
 
 
     function getScrollOffset() {
-      if (document.scrollingElement) {
-        return document.scrollingElement.scrollTop;
-      } else {
-        return document.documentElement.scrollTop + document.body.scrollTop;
-      }
+        if ($window.document.scrollingElement) {
+            return document.scrollingElement.scrollTop;
+        } else {
+            return $window.document.documentElement.scrollTop + $window.document.body.scrollTop;
+        }
     }
 
 
@@ -116,7 +138,7 @@ angular.module('ngDialog', ['ngAnimate'])
         }
 
         // Centered Alignment
-        var topValue = scrollOffset + (window.innerHeight - el.offsetHeight) / 2;
+        var topValue = scrollOffset + ($window.innerHeight - el.offsetHeight) / 2;
 
         el.style.top = Math.max(scrollOffset, topValue) + 'px';
         el.style.zIndex = kZIndexMax;
@@ -149,7 +171,7 @@ angular.module('ngDialog', ['ngAnimate'])
             if (document.scrollingElement) {
                 document.scrollingElement.scrollTop = offset;
             } else {
-                window.scrollTo(0, offset);
+                $window.scrollTo(0, offset);
             }
         }
     }
@@ -179,7 +201,9 @@ angular.module('ngDialog', ['ngAnimate'])
                     restoreScroll = blockScrolling();
                     dialogStack.push(el);
 
-                    return showModal.call(el, anchor);
+                    showModal.call(el, anchor);
+
+                    doFocus(el, true);
                 };
 
                 function checkUnblockScrolling() {
@@ -257,7 +281,7 @@ angular.module('ngDialog', ['ngAnimate'])
 
                     if (value) {
                         // Move it to the end of <body>
-                        document.body.appendChild(el);
+                        $window.document.body.appendChild(el);
 
                         el.setAttribute('open', '');
                     } else {
@@ -283,7 +307,7 @@ angular.module('ngDialog', ['ngAnimate'])
                     return;
                 }
 
-                prevFocus = document.activeElement;
+                prevFocus = $window.document.activeElement;
 
                 var offset = getScrollOffset();
 
@@ -306,7 +330,7 @@ angular.module('ngDialog', ['ngAnimate'])
                     }
                 }
 
-                prevFocus = document.activeElement;
+                prevFocus = $window.document.activeElement;
 
                 var offset = getScrollOffset();
 
@@ -345,7 +369,7 @@ angular.module('ngDialog', ['ngAnimate'])
                 try {
                     evt = new Event('close');
                 } catch(e) {
-                    evt = document.createEvent();
+                    evt = $window.document.createEvent();
                     evt.initEvent('close', false, false);
                 }
                 el.dispatchEvent(evt);
@@ -369,7 +393,7 @@ angular.module('ngDialog', ['ngAnimate'])
                     if (prevFocus && prevFocus.focus) {
                         prevFocus.focus();
                     } else {
-                        document.body.focus();
+                        $window.document.body.focus();
                     }
                 }
 
