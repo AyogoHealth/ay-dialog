@@ -27,6 +27,10 @@ angular.module('ngDialog', ['ngAnimate'])
 
 
     var DIALOG_STYLES = [
+        '[hidden] {',
+        '    display: none;',
+        '}',
+        '',
         'dialog {',
         '    position: absolute;',
         '    left: 0;',
@@ -37,13 +41,19 @@ angular.module('ngDialog', ['ngAnimate'])
         '    height: -webkit-fit-content;',
         '    height: -moz-fit-content;',
         '    height: fit-content;',
+        '    max-height: 100vh;',
         '    margin: auto;',
         '    padding: 1em;',
         '    background: white;',
         '    color: black;',
         '    border: solid;',
-        '    overflow: scroll;',
+        '    visibility: hidden;',
+        '    overflow: auto;',
         '    -webkit-overflow-scrolling: touch;',
+        '}',
+        '',
+        'dialog[open] {',
+        '    visibility: visible;',
         /*
         '}',
         '',
@@ -79,7 +89,7 @@ angular.module('ngDialog', ['ngAnimate'])
 
     function doFocus(el, immediate) {
         // Ewww, because "autofocus" will cause trouble for iOS :(
-        var control = el.querySelector('[dialog-autofocus]');
+        var control = el.querySelector('[autofocus]:not([disabled])');
 
         if (control) {
             if (immediate) {
@@ -311,12 +321,16 @@ angular.module('ngDialog', ['ngAnimate'])
 
                 var offset = getScrollOffset();
 
-                el.open = true;
+                el.hidden = false;
 
                 doPositioning(el, anchor, offset, false);
 
                 prevFocus.blur();
                 doFocus(el);
+
+                requestAnimationFrame(function() {
+                    el.open = true;
+                });
             };
 
 
@@ -334,7 +348,7 @@ angular.module('ngDialog', ['ngAnimate'])
 
                 var offset = getScrollOffset();
 
-                el.open = true;
+                el.hidden = false;
 
                 doPositioning(el, anchor, offset, true);
 
@@ -349,6 +363,10 @@ angular.module('ngDialog', ['ngAnimate'])
 
                 prevFocus.blur();
                 doFocus(el);
+
+                requestAnimationFrame(function() {
+                    el.open = true;
+                });
             };
 
 
