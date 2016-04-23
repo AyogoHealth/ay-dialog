@@ -5,6 +5,7 @@ angular.module('ngDialog', ['ngAnimate'])
 .directive('dialog', function($window) {
 //// DIALOG MANAGER //////////////////////////////////////////////////////////
     var dialogStack = [];
+    var backdropStack = [];
     var addedStyles = false;
     var originalStyles = null;
 
@@ -18,11 +19,12 @@ angular.module('ngDialog', ['ngAnimate'])
         'button:not([disabled])',
         'select:not([disabled])',
         'textarea:not([disabled])',
+        'keygen:not([disabled])',
         'iframe',
         'object',
         'embed',
-        '*[tabindex]',
-        '*[contenteditable=true]'
+        '[tabindex]:not([disabled]):not([tabindex=""])',
+        '[contenteditable=true]'
     ].join(',');
 
 
@@ -54,20 +56,16 @@ angular.module('ngDialog', ['ngAnimate'])
         '',
         'dialog[open] {',
         '    visibility: visible;',
-        /*
         '}',
         '',
-        'dialog[open=modal]::before {',
-        '    display: block;',
-        '    content: \'\';',
+        'dialog[open] + .backdrop {',
         '    position: fixed;',
         '    top: 0;',
+        '    bottom: 0;',
         '    left: 0;',
         '    right: 0;',
-        '    bottom: 0;',
         '    background: rgba(0, 0, 0, 0.1);',
-        '    z-index: -1;',
-        */
+        '    touch-action: none;',
         '}'
     ].join('\n');
 
@@ -77,9 +75,10 @@ angular.module('ngDialog', ['ngAnimate'])
         try {
             evt = new Event('cancel', { cancelable: true });
         } catch(e) {
-            evt = $window.document.createEvent();
+            evt = $window.document.createEvent('Event');
             evt.initEvent('cancel', false, true);
         }
+        Object.defineProperty(evt, '__ngDialog', { value: true });
 
         if (el.dispatchEvent(evt)) {
             el.close();
@@ -155,6 +154,16 @@ angular.module('ngDialog', ['ngAnimate'])
     }
 
 
+    function doBackdrop() {
+        var len = dialogStack.length;
+
+        for (var i = len; i > 0; --i) {
+            dialogStack[i - 1].style.zIndex = kZIndexMax - (2*len - i - 1);
+            backdropStack[i - 1].style.zIndex = kZIndexMax - (2*len - i);
+        }
+    }
+
+
     function blockScrolling(offset) {
         var htmlNode = document.documentElement;
         var prevHtmlStyle = htmlNode.getAttribute('style') || '';
@@ -196,6 +205,7 @@ angular.module('ngDialog', ['ngAnimate'])
             var retVal = '';
             var prevFocus = null;
             var restoreScroll = angular.noop;
+            var backdrop = null;
 
             if (('HTMLDialogElement' in $window) &&
                 (el instanceof $window.HTMLDialogElement))
@@ -291,14 +301,26 @@ angular.module('ngDialog', ['ngAnimate'])
 
                     if (value) {
                         // Move it to the end of <body>
-                        $window.document.body.appendChild(el);
+                        if (backdrop && $window.document.body.contains(backdrop)) {
+                            $window.document.body.insertBefore(el, backdrop);
+                        } else {
+                            console.log('Appending');
+                            $window.document.body.appendChild(el);
+                        }
 
                         el.setAttribute('open', '');
                     } else {
+                        var wasOpen = el.hasAttribute('open');
                         el.removeAttribute('open');
 
+                        if (backdrop) {
+                            $window.document.body.removeChild(backdrop);
+                        }
+
                         // Move it back to where it was originally (ish)
-                        parentNode.appendChild(el);
+                        if (wasOpen && parentNode && parentNode !== el.parentNode) {
+                            parentNode.appendChild(el);
+                        }
                     }
                 }
             });
@@ -325,7 +347,9 @@ angular.module('ngDialog', ['ngAnimate'])
 
                 doPositioning(el, anchor, offset, false);
 
-                prevFocus.blur();
+                if (prevFocus != $window.document.body) {
+                    prevFocus.blur();
+                }
                 doFocus(el);
 
                 requestAnimationFrame(function() {
@@ -350,18 +374,23 @@ angular.module('ngDialog', ['ngAnimate'])
 
                 el.hidden = false;
 
+                if (!backdrop) {
+                    backdrop = $window.document.createElement('div');
+                    backdrop.setAttribute('class', 'backdrop');
+                }
+                $window.document.body.appendChild(backdrop);
+
+                dialogStack.push(el);
+                backdropStack.push(backdrop);
+
                 doPositioning(el, anchor, offset, true);
+                doBackdrop();
 
                 restoreScroll = blockScrolling(offset);
 
-                // Hack to make our backdrop work
-                el.setAttribute('open', 'modal');
-
-                //doBackdrop();
-
-                dialogStack.push(el);
-
-                prevFocus.blur();
+                if (prevFocus != $window.document.body) {
+                    prevFocus.blur();
+                }
                 doFocus(el);
 
                 requestAnimationFrame(function() {
@@ -376,9 +405,7 @@ angular.module('ngDialog', ['ngAnimate'])
                     return;
                 }
 
-                el.open = false;
-
-                if (result !== void 0) {
+                if (result !== undefined) {
                     retVal = result;
                 }
 
@@ -387,15 +414,37 @@ angular.module('ngDialog', ['ngAnimate'])
                 try {
                     evt = new Event('close');
                 } catch(e) {
-                    evt = $window.document.createEvent();
+                    evt = $window.document.createEvent('Event');
                     evt.initEvent('close', false, false);
                 }
                 el.dispatchEvent(evt);
+            }
 
+            el.addEventListener('cancel', function(evt) {
+                if (!el.open || evt.__ngDialog) {
+                    return;
+                }
+
+                retVal = undefined;
+                el.close();
+            });
+
+
+
+            function doClose() {
+                el.open = false;
 
                 var idx = dialogStack.indexOf(el);
                 if (idx !== -1) {
                     dialogStack.splice(idx, 1);
+
+                    if (backdrop) {
+                        idx = backdropStack.indexOf(backdrop);
+
+                        if (idx !== -1) {
+                            backdropStack.splice(idx, 1);
+                        }
+                    }
                 }
 
                 if (dialogStack.length) {
@@ -415,8 +464,14 @@ angular.module('ngDialog', ['ngAnimate'])
                     }
                 }
 
+                doBackdrop();
+                el.style.zIndex = null;
+                el.style.top = null;
+
                 restoreScroll();
             }
+
+            el.addEventListener('close', doClose);
 
 
             // Hook up form submissions
