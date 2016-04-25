@@ -230,6 +230,21 @@ angular.module('ngDialog', ['ngAnimate'])
     }
 
 
+    function keyPress(e) {
+      var topDialog = dialogStack[dialogStack.length - 1];
+      if (!topDialog) {
+        return;
+      }
+
+      if (e.keyCode == 27) {
+        e.preventDefault();
+        e.stopPropagation();
+
+        triggerCancel(topDialog);
+      }
+    }
+
+
 //// DIRECTIVE ///////////////////////////////////////////////////////////////
     return {
         restrict: 'E',
@@ -301,6 +316,9 @@ angular.module('ngDialog', ['ngAnimate'])
                         first.appendChild(dlgStyle);
                     }
                 }
+
+
+                document.body.addEventListener('keydown', keyPress);
             }
 
 
