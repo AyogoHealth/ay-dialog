@@ -196,6 +196,40 @@ angular.module('ngDialog', ['ngAnimate'])
     }
 
 
+    function backdropClick(e) {
+        var topDialog = dialogStack[dialogStack.length - 1];
+
+        var evt;
+        try {
+            evt = new MouseEvent('click', {
+              bubbles:        e.bubbles,
+              cancelable:     e.cancelable,
+              view:           $window,
+              detail:         e.detail,
+              screenX:        e.screenX,
+              screenY:        e.screenY,
+              clientX:        e.clientX,
+              clientY:        e.clientY,
+              ctrlKey:        e.ctrlKey,
+              altKey:         e.altKey,
+              shiftKey:       e.shiftKey,
+              metaKey:        e.metaKey,
+              button:         e.button,
+              relatedTarget:  e.relatedTarget
+            });
+        } catch(e) {
+            evt = $window.document.createEvent('MouseEvent');
+            evt.initMouseEvent(e.type, e.bubbles, e.cancelable, $window,
+                e.detail, e.screenX, e.screenY, e.clientX, e.clientY,
+                e.ctrlKey, e.altKey, e.shiftKey, e.metaKey, e.button,
+                e.relatedTarget);
+        }
+
+        topDialog.dispatchEvent(evt);
+        e.stopPropagation();
+    }
+
+
 //// DIRECTIVE ///////////////////////////////////////////////////////////////
     return {
         restrict: 'E',
@@ -304,7 +338,6 @@ angular.module('ngDialog', ['ngAnimate'])
                         if (backdrop && $window.document.body.contains(backdrop)) {
                             $window.document.body.insertBefore(el, backdrop);
                         } else {
-                            console.log('Appending');
                             $window.document.body.appendChild(el);
                         }
 
@@ -377,6 +410,7 @@ angular.module('ngDialog', ['ngAnimate'])
                 if (!backdrop) {
                     backdrop = $window.document.createElement('div');
                     backdrop.setAttribute('class', 'backdrop');
+                    backdrop.addEventListener('click', backdropClick);
                 }
                 $window.document.body.appendChild(backdrop);
 
@@ -412,7 +446,7 @@ angular.module('ngDialog', ['ngAnimate'])
 
                 var evt;
                 try {
-                    evt = new Event('close');
+                    evt = new Event('close', { bubbles: false });
                 } catch(e) {
                     evt = $window.document.createEvent('Event');
                     evt.initEvent('close', false, false);
@@ -484,6 +518,18 @@ angular.module('ngDialog', ['ngAnimate'])
                 });
             });
 
+
+            // Do some cleanup when the element is removed from the DOM
+            $element.on('$destroy', function() {
+              if (backdrop) {
+                if ($window.document.body.contains(backdrop)) {
+                  $window.document.body.removeChild(backdrop);
+                }
+
+                backdrop.removeEventListener('click', backdropClick);
+                backdrop = null;
+              }
+            });
 
             // Init hack:
             // Force it to set its open state correctly
