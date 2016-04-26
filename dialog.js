@@ -156,10 +156,24 @@ angular.module('ngDialog', ['ngAnimate'])
 
     function doBackdrop() {
         var len = dialogStack.length;
+        var topDialog = dialogStack[dialogStack.length - 1];
 
         for (var i = len; i > 0; --i) {
             dialogStack[i - 1].style.zIndex = kZIndexMax - (2*len - i - 1);
             backdropStack[i - 1].style.zIndex = kZIndexMax - (2*len - i);
+        }
+
+        var nodes = $window.document.body.children;
+        for (var i = 0, ii = nodes.length; i < ii; ++i) {
+          if (['SCRIPT', 'STYLE', 'LINK'].indexOf(nodes[i].tagName) !== -1) {
+            continue;
+          }
+
+          if (topDialog && nodes[i] !== topDialog) {
+            nodes[i].setAttribute('aria-hidden', true);
+          } else {
+            nodes[i].removeAttribute('aria-hidden');
+          }
         }
     }
 
