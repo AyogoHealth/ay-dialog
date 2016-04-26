@@ -86,11 +86,11 @@ angular.module('ngDialog', ['ngAnimate'])
     }
 
 
-    function doFocus(el, immediate) {
+    function doFocus(el, immediate, skipauto) {
         // Ewww, because "autofocus" will cause trouble for iOS :(
         var control = el.querySelector('[autofocus]:not([disabled])');
 
-        if (control) {
+        if (control && !skipauto) {
             if (immediate) {
                 control.focus();
                 return;
@@ -250,11 +250,27 @@ angular.module('ngDialog', ['ngAnimate'])
         return;
       }
 
-      if (e.keyCode == 27) {
+      if (e.keyCode === 27) {
         e.preventDefault();
         e.stopPropagation();
 
         triggerCancel(topDialog);
+      }
+    }
+
+
+    function modalFocus(e) {
+      var topDialog = dialogStack[dialogStack.length - 1];
+      if (!topDialog) {
+        return;
+      }
+
+      if (e.target !== topDialog && !topDialog.contains(e.target)) {
+        e.preventDefault();
+        e.stopPropagation();
+        e.target.blur();
+
+        doFocus(topDialog, true, true);
       }
     }
 
@@ -333,6 +349,7 @@ angular.module('ngDialog', ['ngAnimate'])
 
 
                 document.body.addEventListener('keydown', keyPress);
+                document.addEventListener('focus', modalFocus, true);
             }
 
 
