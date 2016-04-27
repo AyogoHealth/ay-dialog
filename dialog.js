@@ -300,9 +300,11 @@ angular.module('ngDialog', ['ngAnimate'])
                     restoreScroll = blockScrolling();
                     dialogStack.push(el);
 
-                    showModal.call(el, anchor);
+                    requestAnimationFrame(function() {
+                        showModal.call(el, anchor);
 
-                    doFocus(el, true);
+                        doFocus(el, true);
+                    });
                 };
 
                 function checkUnblockScrolling() {
@@ -316,6 +318,12 @@ angular.module('ngDialog', ['ngAnimate'])
 
                 el.addEventListener('close', checkUnblockScrolling);
                 el.addEventListener('cancel', checkUnblockScrolling);
+
+                $element.on('$destroy', function() {
+                    el.removeEventListener('close', checkUnblockScrolling);
+                    el.removeEventListener('cancel', checkUnblockScrolling);
+                    el = null;
+                });
 
                 // Nothing more to do, <dialog> is supported
                 return;
@@ -503,15 +511,17 @@ angular.module('ngDialog', ['ngAnimate'])
                 el.dispatchEvent(evt);
             }
 
-            el.addEventListener('cancel', function(evt) {
+
+            function handleCancel(evt) {
                 if (!el.open || evt.__ngDialog) {
                     return;
                 }
 
                 retVal = undefined;
                 el.close();
-            });
+            }
 
+            el.addEventListener('cancel', handleCancel);
 
 
             function doClose() {
@@ -570,14 +580,18 @@ angular.module('ngDialog', ['ngAnimate'])
 
             // Do some cleanup when the element is removed from the DOM
             $element.on('$destroy', function() {
-              if (backdrop) {
-                if ($window.document.body.contains(backdrop)) {
-                  $window.document.body.removeChild(backdrop);
+                if (backdrop) {
+                    if ($window.document.body.contains(backdrop)) {
+                        $window.document.body.removeChild(backdrop);
+                    }
+
+                    backdrop.removeEventListener('click', backdropClick);
+                    backdrop = null;
                 }
 
-                backdrop.removeEventListener('click', backdropClick);
-                backdrop = null;
-              }
+                el.removeEventListener('close', doClose);
+                el.removeEventListener('cancel', handleCancel);
+                el = null;
             });
 
             // Init hack:
