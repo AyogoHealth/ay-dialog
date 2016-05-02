@@ -9,6 +9,8 @@ angular.module('ngDialog', ['ngAnimate'])
     var addedStyles = false;
     var originalStyles = null;
 
+    var isSafariMobile = $window.navigator.userAgent.match(/iP(ad|od|hone)/);
+
     var kZIndexMax = Math.pow(2, 31) - 1;
 
     // Courtesy of AngularUI Bootstrap's $modal service
@@ -99,6 +101,7 @@ angular.module('ngDialog', ['ngAnimate'])
             $window.setTimeout(function() {
                 control.focus();
             }, 1);
+            el.focus();
             return;
         }
 
@@ -113,17 +116,11 @@ angular.module('ngDialog', ['ngAnimate'])
             $window.setTimeout(function() {
                 control.focus();
             }, 1);
-            return;
-        }
-
-        if (immediate) {
             el.focus();
             return;
         }
 
-        $window.setTimeout(function() {
-            el.focus();
-        }, 1);
+        el.focus();
     }
 
 
@@ -286,6 +283,12 @@ angular.module('ngDialog', ['ngAnimate'])
             var restoreScroll = angular.noop;
             var backdrop = null;
 
+            // Set the aria-role to dialog (even if natively supported)
+            if (!el.hasAttribute('role')) {
+                el.setAttribute('role', 'dialog');
+            }
+
+
             if (('HTMLDialogElement' in $window) &&
                 (el instanceof $window.HTMLDialogElement))
             {
@@ -358,12 +361,6 @@ angular.module('ngDialog', ['ngAnimate'])
 
                 document.body.addEventListener('keydown', keyPress);
                 document.addEventListener('focus', modalFocus, true);
-            }
-
-
-            // Set the aria-role to dialog
-            if (!el.hasAttribute('role')) {
-                el.setAttribute('role', 'dialog');
             }
 
 
@@ -440,10 +437,17 @@ angular.module('ngDialog', ['ngAnimate'])
                 if (prevFocus != $window.document.body) {
                     prevFocus.blur();
                 }
-                doFocus(el);
+
+                if (isSafariMobile) {
+                    doFocus(el);
+                }
 
                 requestAnimationFrame(function() {
                     el.open = true;
+
+                    if (!isSafariMobile) {
+                        doFocus(el, true);
+                    }
                 });
             };
 
@@ -482,10 +486,17 @@ angular.module('ngDialog', ['ngAnimate'])
                 if (prevFocus != $window.document.body) {
                     prevFocus.blur();
                 }
-                doFocus(el);
+
+                if (isSafariMobile) {
+                    doFocus(el);
+                }
 
                 requestAnimationFrame(function() {
                     el.open = true;
+
+                    if (!isSafariMobile) {
+                        doFocus(el, true);
+                    }
                 });
             };
 
@@ -547,7 +558,7 @@ angular.module('ngDialog', ['ngAnimate'])
                     if (prevFocus && top.contains(prevFocus)) {
                         prevFocus.focus();
                     } else {
-                        doFocus(top);
+                        doFocus(top, !isSafariMobile);
                     }
                 } else {
                     if (prevFocus && prevFocus.focus) {
