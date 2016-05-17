@@ -388,11 +388,9 @@ angular.module('ngDialog', ['ngAnimate'])
                     el.hidden = !value;
 
                     if (value) {
-                        // Move it to the end of <body>
+                        // Move it to the end of <body> if modal
                         if (backdrop && $window.document.body.contains(backdrop)) {
                             $window.document.body.insertBefore(el, backdrop);
-                        } else {
-                            $window.document.body.appendChild(el);
                         }
 
                         el.setAttribute('open', '');
