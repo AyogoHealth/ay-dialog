@@ -505,6 +505,9 @@ angular.module('ngDialog', ['ngAnimate'])
                     return;
                 }
 
+                // The spec is ambiguous as to whether this should be an empty
+                // string or undefined. Chrome uses an empty string, so we're
+                // doing the same for compatibility.
                 if (result !== undefined) {
                     retVal = result;
                 }
@@ -526,7 +529,10 @@ angular.module('ngDialog', ['ngAnimate'])
                     return;
                 }
 
-                retVal = undefined;
+                // The spec is ambiguous as to whether this should be an empty
+                // string or undefined. Chrome uses an empty string, so we're
+                // doing the same for compatibility.
+                retVal = "";
                 el.close();
             }
 
