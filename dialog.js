@@ -125,8 +125,13 @@ angular.module('ngDialog', ['ngAnimate'])
 
 
     function getScrollOffset() {
+        if ($window.document.body.style.top) {
+            var offset = parseInt($window.document.body.style.top, 10);
+            return Math.abs(offset);
+        }
+
         if ($window.document.scrollingElement) {
-            return document.scrollingElement.scrollTop;
+            return $window.document.scrollingElement.scrollTop;
         } else {
             return $window.document.documentElement.scrollTop + $window.document.body.scrollTop;
         }
