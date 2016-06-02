@@ -639,3 +639,9 @@ angular.module('ayDialog', [])
         }
     };
 }]);
+
+
+if (typeof exports === 'object') {
+    Object.defineProperty(exports, '__esModule', { value: true});
+    exports.default = 'ayDialog';
+}
