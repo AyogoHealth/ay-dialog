@@ -19,5 +19,18 @@
  * IN THE SOFTWARE.
  */
 
+export interface HTMLDialogElement extends HTMLElement {
+    open: boolean,
+    returnValue: any,
+    close: (returnValue?: any)=>void,
+    show: ()=>void,
+    showModal: ()=>void
+}
+
+export declare var HTMLDialogElement: {
+    prototype: HTMLDialogElement;
+    new(): HTMLDialogElement;
+};
+
 declare var _default: string;
 export default _default;
