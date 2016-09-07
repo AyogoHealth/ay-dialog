@@ -1,12 +1,12 @@
 {
   "name": "ay-dialog",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "copyright": "Copyright 2016 Ayogo Health Inc.",
   "license": "MIT",
   "homepage": "http://ayogo.com",
   "author": "Ayogo Health Inc. <info@ayogo.com>",
   "contributors": [
-      "Darryl Pogue <darryl@dpogue.ca>"
+    "Darryl Pogue <darryl@dpogue.ca>"
   ],
   "description": "An HTML5 spec-compliant <dialog> polyfill.",
   "keywords": [
