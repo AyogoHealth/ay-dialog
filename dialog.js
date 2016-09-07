@@ -477,11 +477,7 @@ angular.module('ayDialog', [])
             // Polyfill the dialog `showModal(anchor)` method
             el.showModal = function(anchor) {
                 if (el.open) {
-                    if (typeof DOMException === 'function') {
-                        throw new DOMException('Modal is already open', 'InvalidStateError');
-                    } else {
-                        throw new Error('Modal is already open');
-                    }
+                    return;
                 }
 
                 prevFocus = $window.document.activeElement;
