@@ -456,7 +456,7 @@ angular.module('ayDialog', [])
 
                 doPositioning(el, anchor, offset, false);
 
-                if (prevFocus != $window.document.body) {
+                if (prevFocus && (prevFocus != $window.document.body)) {
                     prevFocus.blur();
                 }
 
