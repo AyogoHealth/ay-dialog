@@ -31,7 +31,6 @@
     "angular": "^1.4.0"
   },
   "scripts": {
-    "version": "npm run dist && git add -A dist",
     "postversion": "git push && git push --tags"
   }
 }
