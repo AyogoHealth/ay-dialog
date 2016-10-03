@@ -6,7 +6,8 @@
   "homepage": "http://ayogo.com",
   "author": "Ayogo Health Inc. <info@ayogo.com>",
   "contributors": [
-    "Darryl Pogue <darryl@dpogue.ca>"
+    "Darryl Pogue <darryl@dpogue.ca>",
+    "Onataze Messiri <onataze@gmail.com>"
   ],
   "description": "An HTML5 spec-compliant <dialog> polyfill.",
   "keywords": [
