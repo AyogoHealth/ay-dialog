@@ -501,7 +501,7 @@ angular.module('ayDialog', [])
 
                 restoreScroll = blockScrolling(offset);
 
-                if (prevFocus != $window.document.body) {
+                if (prevFocus && (prevFocus != $window.document.body)) {
                     prevFocus.blur();
                 }
 
