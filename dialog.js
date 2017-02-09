@@ -32,22 +32,6 @@ angular.module('ayDialog', [])
 
     var kZIndexMax = Math.pow(2, 31) - 1;
 
-    // Courtesy of AngularUI Bootstrap's $modal service
-    var FOCUS_SELECTOR = [
-        'a[href]',
-        'area[href]',
-        'input:not([disabled])',
-        'button:not([disabled])',
-        'select:not([disabled])',
-        'textarea:not([disabled])',
-        'keygen:not([disabled])',
-        'iframe',
-        'object',
-        'embed',
-        '[tabindex]:not([disabled]):not([tabindex=""])',
-        '[contenteditable=true]'
-    ].join(',');
-
 
     var DIALOG_STYLES = [
         '[hidden] {',
@@ -73,6 +57,10 @@ angular.module('ayDialog', [])
         '    visibility: hidden;',
         '    overflow: auto;',
         '    -webkit-overflow-scrolling: touch;',
+        '}',
+        '',
+        'dialog:focus {',
+        '    outline: 0 none;',
         '}',
         '',
         'dialog[open] {',
@@ -112,21 +100,6 @@ angular.module('ayDialog', [])
         var control = el.querySelector('[autofocus]:not([disabled])');
 
         if (control && !skipauto) {
-            if (immediate) {
-                control.focus();
-                return;
-            }
-
-            $window.setTimeout(function() {
-                control.focus();
-            }, 1);
-            el.focus();
-            return;
-        }
-
-        var control = el.querySelector(FOCUS_SELECTOR);
-
-        if (control) {
             if (immediate) {
                 control.focus();
                 return;
@@ -310,6 +283,11 @@ angular.module('ayDialog', [])
             // Set the aria-role to dialog (even if natively supported)
             if (!el.hasAttribute('role')) {
                 el.setAttribute('role', 'dialog');
+            }
+
+            // Ensure the dialog is focusable
+            if (!el.hasAttribute('tabindex')) {
+                el.tabIndex = -1;
             }
 
 
