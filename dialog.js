@@ -325,6 +325,10 @@ angular.module('ayDialog', [])
                 el.addEventListener('cancel', checkUnblockScrolling);
 
                 $element.on('$destroy', function() {
+                    if (el.open) {
+                        checkUnblockScrolling();
+                    }
+
                     el.removeEventListener('close', checkUnblockScrolling);
                     el.removeEventListener('cancel', checkUnblockScrolling);
                     el = null;
