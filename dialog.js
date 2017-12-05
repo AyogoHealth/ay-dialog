@@ -302,7 +302,8 @@ angular.module('ayDialog', [])
                 // dialogs are open.
                 var showModal = HTMLDialogElement.prototype.showModal;
                 el.showModal = function(anchor) {
-                    restoreScroll = blockScrolling();
+                    var offset = getScrollOffset();
+                    restoreScroll = blockScrolling(offset);
                     dialogStack.push(el);
 
                     requestAnimationFrame(function() {
