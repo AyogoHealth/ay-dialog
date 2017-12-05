@@ -34,6 +34,7 @@ angular.module('ayDialog', [])
 
 
     var DIALOG_STYLES = [
+        'dialog-sentinel,',
         '[hidden] {',
         '    display: none;',
         '}',
@@ -279,6 +280,7 @@ angular.module('ayDialog', [])
             var prevFocus = null;
             var restoreScroll = angular.noop;
             var backdrop = null;
+            var sentinel = null;
 
             // Set the aria-role to dialog (even if natively supported)
             if (!el.hasAttribute('role')) {
@@ -411,7 +413,9 @@ angular.module('ayDialog', [])
 
                         // Move it back to where it was originally (ish)
                         if (wasOpen && parentNode && parentNode !== el.parentNode) {
-                            parentNode.appendChild(el);
+                            parentNode.insertBefore(el, sentinel);
+                            parentNode.removeChild(sentinel);
+                            sentinel = null;
                         }
                     }
                 }
@@ -468,6 +472,11 @@ angular.module('ayDialog', [])
                 var offset = getScrollOffset();
 
                 el.hidden = false;
+
+                if (!sentinel) {
+                    sentinel = $window.document.createElement('dialog-sentinel');
+                    parentNode.insertBefore(sentinel, el);
+                }
 
                 if (!backdrop) {
                     backdrop = $window.document.createElement('div');
@@ -596,6 +605,14 @@ angular.module('ayDialog', [])
             });
 
 
+            var mo = new MutationObserver(function(evt) {
+                if (sentinel && !$window.document.body.contains(sentinel)) {
+                    doClose();
+                }
+            });
+            mo.observe($window.document.body, { childList: true, subtree: true });
+
+
             // Do some cleanup when the element is removed from the DOM
             $element.on('$destroy', function() {
                 if (backdrop) {
@@ -606,6 +623,8 @@ angular.module('ayDialog', [])
                     backdrop.removeEventListener('click', backdropClick);
                     backdrop = null;
                 }
+
+                mo.disconnect();
 
                 el.removeEventListener('close', doClose);
                 el.removeEventListener('cancel', handleCancel);
