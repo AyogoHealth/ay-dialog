@@ -473,7 +473,7 @@ angular.module('ayDialog', [])
 
                 el.hidden = false;
 
-                if (!sentinel) {
+                if (parentNode && !sentinel) {
                     sentinel = $window.document.createElement('dialog-sentinel');
                     parentNode.insertBefore(sentinel, el);
                 }
