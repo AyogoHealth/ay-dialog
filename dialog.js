@@ -100,6 +100,9 @@ angular.module('ayDialog', [])
         // Ewww, because "autofocus" will cause trouble for iOS :(
         var control = el.querySelector('[autofocus]:not([disabled])');
 
+        // Ensure we start scrolled to the top of the dialog, before focusing
+        el.scrollTop = 0;
+
         if (control && !skipauto) {
             if (immediate) {
                 control.focus();
