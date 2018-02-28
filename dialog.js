@@ -134,11 +134,7 @@ angular.module('ayDialog', [])
     }
 
 
-    function doPositioning(el, anchor, scrollOffset, modal) {
-        if (anchor) {
-            console.warn('Magic Alignment mode for <dialog> unsupported!');
-        }
-
+    function doPositioning(el, scrollOffset, modal) {
         // Normal Alignment
         if (!modal) {
             return;
@@ -306,13 +302,13 @@ angular.module('ayDialog', [])
                 // Slight hack to prevent scrolling on the body while
                 // dialogs are open.
                 var showModal = HTMLDialogElement.prototype.showModal;
-                el.showModal = function(anchor) {
+                el.showModal = function() {
                     var offset = getScrollOffset();
                     restoreScroll = blockScrolling(offset);
                     dialogStack.push(el);
 
                     requestAnimationFrame(function() {
-                        showModal.call(el, anchor);
+                        showModal.call(el);
 
                         doFocus(el, true);
                     });
@@ -432,8 +428,8 @@ angular.module('ayDialog', [])
             });
 
 
-            // Polyfill the dialog `show(anchor)` method
-            el.show = function(anchor) {
+            // Polyfill the dialog `show()` method
+            el.show = function() {
                 if (el.open) {
                     return;
                 }
@@ -444,7 +440,7 @@ angular.module('ayDialog', [])
 
                 el.hidden = false;
 
-                doPositioning(el, anchor, offset, false);
+                doPositioning(el, offset, false);
 
                 if (prevFocus && (prevFocus != $window.document.body)) {
                     prevFocus.blur();
@@ -464,8 +460,8 @@ angular.module('ayDialog', [])
             };
 
 
-            // Polyfill the dialog `showModal(anchor)` method
-            el.showModal = function(anchor) {
+            // Polyfill the dialog `showModal()` method
+            el.showModal = function() {
                 if (el.open) {
                     return;
                 }
@@ -491,7 +487,7 @@ angular.module('ayDialog', [])
                 dialogStack.push(el);
                 backdropStack.push(backdrop);
 
-                doPositioning(el, anchor, offset, true);
+                doPositioning(el, offset, true);
                 doBackdrop();
 
                 restoreScroll = blockScrolling(offset);
