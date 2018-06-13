@@ -3,13 +3,23 @@
     <head>
         <meta charset="utf-8">
         <title>Dialog demo</title>
-        <meta name="viewport" content="width=device-width">
+        <meta name="viewport" content="width=device-width, viewport-fit=cover">
 
         <script src="node_modules/angular/angular.min.js"></script>
         <!-- <script src="node_modules/angular/angular-animate.min.js"></script> -->
         <script src="dialog.js"></script>
+        <style>
+            body {
+                margin: 0;
+                padding: 1em;
+                padding-top: calc(env(safe-area-inset-top, 0) + 1em);
+                padding-bottom: calc(env(safe-area-inset-bottom, 0) + 1em);
+                padding-left: calc(env(safe-area-inset-left, 0) + 1em);
+                padding-right: calc(env(safe-area-inset-right, 0) + 1em);
+            }
+        </style>
     </head>
-    <body style="margin: 0">
+    <body>
         <dialog id="dlg1">
             <h1>Dialog Title</h1>
             <p>Hello World.</p>
@@ -28,9 +38,9 @@
         </dialog>
 
         <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum sit amet interdum dolor, id facilisis ex. Phasellus iaculis nisl magna, nec molestie nunc interdum sed. Nullam volutpat tincidunt velit vel tempus. Sed sit amet pellentesque sapien. Cras vitae mauris laoreet, volutpat nibh eget, mollis felis. Sed cursus nunc in mi consequat feugiat. Proin eget augue vitae risus blandit commodo sit amet in nisl. Sed ac diam sit amet ipsum viverra rutrum eget convallis turpis. Phasellus a rutrum lacus. Cras diam justo, placerat a elementum a, laoreet nec nisi. Vivamus consectetur sed nisi vitae elementum. Duis vitae arcu vitae arcu fringilla interdum. Nulla vitae nunc vitae sapien pulvinar facilisis. Fusce ac sapien euismod, auctor nibh ac, finibus mauris.</p>
+        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum sit amet interdum dolor, id facilisis ex. Phasellus iaculis nisl magna, nec molestie nunc interdum sed. Nullam volutpat tincidunt velit vel tempus. Sed sit amet pellentesque sapien. Cras vitae mauris laoreet, volutpat nibh eget, mollis felis. Sed cursus nunc in mi consequat feugiat. Proin eget augue vitae risus blandit commodo sit amet in nisl. Sed ac diam sit amet ipsum viverra rutrum eget convallis turpis. Phasellus a rutrum lacus. Cras diam justo, placerat a elementum a, laoreet nec nisi. Vivamus consectetur sed nisi vitae elementum. Duis vitae arcu vitae arcu fringilla interdum. Nulla vitae nunc vitae sapien pulvinar facilisis. Fusce ac sapien euismod, auctor nibh ac, finibus mauris.</p>
+        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum sit amet interdum dolor, id facilisis ex. Phasellus iaculis nisl magna, nec molestie nunc interdum sed. Nullam volutpat tincidunt velit vel tempus. Sed sit amet pellentesque sapien. Cras vitae mauris laoreet, volutpat nibh eget, mollis felis. Sed cursus nunc in mi consequat feugiat. Proin eget augue vitae risus blandit commodo sit amet in nisl. Sed ac diam sit amet ipsum viverra rutrum eget convallis turpis. Phasellus a rutrum lacus. Cras diam justo, placerat a elementum a, laoreet nec nisi. Vivamus consectetur sed nisi vitae elementum. Duis vitae arcu vitae arcu fringilla interdum. Nulla vitae nunc vitae sapien pulvinar facilisis. Fusce ac sapien euismod, auctor nibh ac, finibus mauris.</p>
         <p><button id="btn1">Click here to open modal</button></p>
-        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum sit amet interdum dolor, id facilisis ex. Phasellus iaculis nisl magna, nec molestie nunc interdum sed. Nullam volutpat tincidunt velit vel tempus. Sed sit amet pellentesque sapien. Cras vitae mauris laoreet, volutpat nibh eget, mollis felis. Sed cursus nunc in mi consequat feugiat. Proin eget augue vitae risus blandit commodo sit amet in nisl. Sed ac diam sit amet ipsum viverra rutrum eget convallis turpis. Phasellus a rutrum lacus. Cras diam justo, placerat a elementum a, laoreet nec nisi. Vivamus consectetur sed nisi vitae elementum. Duis vitae arcu vitae arcu fringilla interdum. Nulla vitae nunc vitae sapien pulvinar facilisis. Fusce ac sapien euismod, auctor nibh ac, finibus mauris.</p>
-        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum sit amet interdum dolor, id facilisis ex. Phasellus iaculis nisl magna, nec molestie nunc interdum sed. Nullam volutpat tincidunt velit vel tempus. Sed sit amet pellentesque sapien. Cras vitae mauris laoreet, volutpat nibh eget, mollis felis. Sed cursus nunc in mi consequat feugiat. Proin eget augue vitae risus blandit commodo sit amet in nisl. Sed ac diam sit amet ipsum viverra rutrum eget convallis turpis. Phasellus a rutrum lacus. Cras diam justo, placerat a elementum a, laoreet nec nisi. Vivamus consectetur sed nisi vitae elementum. Duis vitae arcu vitae arcu fringilla interdum. Nulla vitae nunc vitae sapien pulvinar facilisis. Fusce ac sapien euismod, auctor nibh ac, finibus mauris.</p>
         <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum sit amet interdum dolor, id facilisis ex. Phasellus iaculis nisl magna, nec molestie nunc interdum sed. Nullam volutpat tincidunt velit vel tempus. Sed sit amet pellentesque sapien. Cras vitae mauris laoreet, volutpat nibh eget, mollis felis. Sed cursus nunc in mi consequat feugiat. Proin eget augue vitae risus blandit commodo sit amet in nisl. Sed ac diam sit amet ipsum viverra rutrum eget convallis turpis. Phasellus a rutrum lacus. Cras diam justo, placerat a elementum a, laoreet nec nisi. Vivamus consectetur sed nisi vitae elementum. Duis vitae arcu vitae arcu fringilla interdum. Nulla vitae nunc vitae sapien pulvinar facilisis. Fusce ac sapien euismod, auctor nibh ac, finibus mauris.</p>
         <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum sit amet interdum dolor, id facilisis ex. Phasellus iaculis nisl magna, nec molestie nunc interdum sed. Nullam volutpat tincidunt velit vel tempus. Sed sit amet pellentesque sapien. Cras vitae mauris laoreet, volutpat nibh eget, mollis felis. Sed cursus nunc in mi consequat feugiat. Proin eget augue vitae risus blandit commodo sit amet in nisl. Sed ac diam sit amet ipsum viverra rutrum eget convallis turpis. Phasellus a rutrum lacus. Cras diam justo, placerat a elementum a, laoreet nec nisi. Vivamus consectetur sed nisi vitae elementum. Duis vitae arcu vitae arcu fringilla interdum. Nulla vitae nunc vitae sapien pulvinar facilisis. Fusce ac sapien euismod, auctor nibh ac, finibus mauris.</p>
         <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum sit amet interdum dolor, id facilisis ex. Phasellus iaculis nisl magna, nec molestie nunc interdum sed. Nullam volutpat tincidunt velit vel tempus. Sed sit amet pellentesque sapien. Cras vitae mauris laoreet, volutpat nibh eget, mollis felis. Sed cursus nunc in mi consequat feugiat. Proin eget augue vitae risus blandit commodo sit amet in nisl. Sed ac diam sit amet ipsum viverra rutrum eget convallis turpis. Phasellus a rutrum lacus. Cras diam justo, placerat a elementum a, laoreet nec nisi. Vivamus consectetur sed nisi vitae elementum. Duis vitae arcu vitae arcu fringilla interdum. Nulla vitae nunc vitae sapien pulvinar facilisis. Fusce ac sapien euismod, auctor nibh ac, finibus mauris.</p>
@@ -56,7 +66,7 @@
             var btnClose2 = document.querySelector('#btnClose2');
 
             btn1.addEventListener('click', function() {
-                dlg1.showModal() //Modal();
+                dlg1.showModal();
             });
 
             btn2.addEventListener('click', function() {
