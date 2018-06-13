@@ -181,8 +181,10 @@ angular.module('ayDialog', [])
 
         if (document.body.scrollHeight > htmlNode.clientHeight) {
             document.body.style.position = 'fixed';
-            document.body.style.width = '100%';
+            document.body.style.left = '0';
+            document.body.style.right = '0';
             document.body.style.top = -offset + 'px';
+            htmlNode.style.minHeight = '100vh';
 
             htmlNode.style.overflowY = 'scroll';
         }
