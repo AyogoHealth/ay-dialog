@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html ng-app="ayDialog">
+    <head>
+        <meta charset="utf-8">
+        <title>Dialog demo</title>
+        <meta name="viewport" content="width=device-width">
+
+        <script src="node_modules/angular/angular.min.js"></script>
+        <!-- <script src="node_modules/angular/angular-animate.min.js"></script> -->
+        <script src="dialog.js"></script>
+    </head>
+    <body style="margin: 0">
+        <dialog id="dlg1">
+            <h1>Dialog Title</h1>
+            <p>Hello World.</p>
+
+            <label for="inSearch">Search:</label>
+            <input id="inSearch" type="search" autofocus>
+
+            <p><button id="btn2">Open child</button></p>
+            <p><button id="btnClose">Close</button></p>
+        </dialog>
+
+        <dialog id="dlg2">
+            This is a second modal
+
+            <button id="btnClose2">Close</button>
+        </dialog>
+
+        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum sit amet interdum dolor, id facilisis ex. Phasellus iaculis nisl magna, nec molestie nunc interdum sed. Nullam volutpat tincidunt velit vel tempus. Sed sit amet pellentesque sapien. Cras vitae mauris laoreet, volutpat nibh eget, mollis felis. Sed cursus nunc in mi consequat feugiat. Proin eget augue vitae risus blandit commodo sit amet in nisl. Sed ac diam sit amet ipsum viverra rutrum eget convallis turpis. Phasellus a rutrum lacus. Cras diam justo, placerat a elementum a, laoreet nec nisi. Vivamus consectetur sed nisi vitae elementum. Duis vitae arcu vitae arcu fringilla interdum. Nulla vitae nunc vitae sapien pulvinar facilisis. Fusce ac sapien euismod, auctor nibh ac, finibus mauris.</p>
+        <p><button id="btn1">Click here to open modal</button></p>
+        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum sit amet interdum dolor, id facilisis ex. Phasellus iaculis nisl magna, nec molestie nunc interdum sed. Nullam volutpat tincidunt velit vel tempus. Sed sit amet pellentesque sapien. Cras vitae mauris laoreet, volutpat nibh eget, mollis felis. Sed cursus nunc in mi consequat feugiat. Proin eget augue vitae risus blandit commodo sit amet in nisl. Sed ac diam sit amet ipsum viverra rutrum eget convallis turpis. Phasellus a rutrum lacus. Cras diam justo, placerat a elementum a, laoreet nec nisi. Vivamus consectetur sed nisi vitae elementum. Duis vitae arcu vitae arcu fringilla interdum. Nulla vitae nunc vitae sapien pulvinar facilisis. Fusce ac sapien euismod, auctor nibh ac, finibus mauris.</p>
+        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum sit amet interdum dolor, id facilisis ex. Phasellus iaculis nisl magna, nec molestie nunc interdum sed. Nullam volutpat tincidunt velit vel tempus. Sed sit amet pellentesque sapien. Cras vitae mauris laoreet, volutpat nibh eget, mollis felis. Sed cursus nunc in mi consequat feugiat. Proin eget augue vitae risus blandit commodo sit amet in nisl. Sed ac diam sit amet ipsum viverra rutrum eget convallis turpis. Phasellus a rutrum lacus. Cras diam justo, placerat a elementum a, laoreet nec nisi. Vivamus consectetur sed nisi vitae elementum. Duis vitae arcu vitae arcu fringilla interdum. Nulla vitae nunc vitae sapien pulvinar facilisis. Fusce ac sapien euismod, auctor nibh ac, finibus mauris.</p>
+        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum sit amet interdum dolor, id facilisis ex. Phasellus iaculis nisl magna, nec molestie nunc interdum sed. Nullam volutpat tincidunt velit vel tempus. Sed sit amet pellentesque sapien. Cras vitae mauris laoreet, volutpat nibh eget, mollis felis. Sed cursus nunc in mi consequat feugiat. Proin eget augue vitae risus blandit commodo sit amet in nisl. Sed ac diam sit amet ipsum viverra rutrum eget convallis turpis. Phasellus a rutrum lacus. Cras diam justo, placerat a elementum a, laoreet nec nisi. Vivamus consectetur sed nisi vitae elementum. Duis vitae arcu vitae arcu fringilla interdum. Nulla vitae nunc vitae sapien pulvinar facilisis. Fusce ac sapien euismod, auctor nibh ac, finibus mauris.</p>
+        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum sit amet interdum dolor, id facilisis ex. Phasellus iaculis nisl magna, nec molestie nunc interdum sed. Nullam volutpat tincidunt velit vel tempus. Sed sit amet pellentesque sapien. Cras vitae mauris laoreet, volutpat nibh eget, mollis felis. Sed cursus nunc in mi consequat feugiat. Proin eget augue vitae risus blandit commodo sit amet in nisl. Sed ac diam sit amet ipsum viverra rutrum eget convallis turpis. Phasellus a rutrum lacus. Cras diam justo, placerat a elementum a, laoreet nec nisi. Vivamus consectetur sed nisi vitae elementum. Duis vitae arcu vitae arcu fringilla interdum. Nulla vitae nunc vitae sapien pulvinar facilisis. Fusce ac sapien euismod, auctor nibh ac, finibus mauris.</p>
+        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum sit amet interdum dolor, id facilisis ex. Phasellus iaculis nisl magna, nec molestie nunc interdum sed. Nullam volutpat tincidunt velit vel tempus. Sed sit amet pellentesque sapien. Cras vitae mauris laoreet, volutpat nibh eget, mollis felis. Sed cursus nunc in mi consequat feugiat. Proin eget augue vitae risus blandit commodo sit amet in nisl. Sed ac diam sit amet ipsum viverra rutrum eget convallis turpis. Phasellus a rutrum lacus. Cras diam justo, placerat a elementum a, laoreet nec nisi. Vivamus consectetur sed nisi vitae elementum. Duis vitae arcu vitae arcu fringilla interdum. Nulla vitae nunc vitae sapien pulvinar facilisis. Fusce ac sapien euismod, auctor nibh ac, finibus mauris.</p>
+        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum sit amet interdum dolor, id facilisis ex. Phasellus iaculis nisl magna, nec molestie nunc interdum sed. Nullam volutpat tincidunt velit vel tempus. Sed sit amet pellentesque sapien. Cras vitae mauris laoreet, volutpat nibh eget, mollis felis. Sed cursus nunc in mi consequat feugiat. Proin eget augue vitae risus blandit commodo sit amet in nisl. Sed ac diam sit amet ipsum viverra rutrum eget convallis turpis. Phasellus a rutrum lacus. Cras diam justo, placerat a elementum a, laoreet nec nisi. Vivamus consectetur sed nisi vitae elementum. Duis vitae arcu vitae arcu fringilla interdum. Nulla vitae nunc vitae sapien pulvinar facilisis. Fusce ac sapien euismod, auctor nibh ac, finibus mauris.</p>
+        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum sit amet interdum dolor, id facilisis ex. Phasellus iaculis nisl magna, nec molestie nunc interdum sed. Nullam volutpat tincidunt velit vel tempus. Sed sit amet pellentesque sapien. Cras vitae mauris laoreet, volutpat nibh eget, mollis felis. Sed cursus nunc in mi consequat feugiat. Proin eget augue vitae risus blandit commodo sit amet in nisl. Sed ac diam sit amet ipsum viverra rutrum eget convallis turpis. Phasellus a rutrum lacus. Cras diam justo, placerat a elementum a, laoreet nec nisi. Vivamus consectetur sed nisi vitae elementum. Duis vitae arcu vitae arcu fringilla interdum. Nulla vitae nunc vitae sapien pulvinar facilisis. Fusce ac sapien euismod, auctor nibh ac, finibus mauris.</p>
+        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum sit amet interdum dolor, id facilisis ex. Phasellus iaculis nisl magna, nec molestie nunc interdum sed. Nullam volutpat tincidunt velit vel tempus. Sed sit amet pellentesque sapien. Cras vitae mauris laoreet, volutpat nibh eget, mollis felis. Sed cursus nunc in mi consequat feugiat. Proin eget augue vitae risus blandit commodo sit amet in nisl. Sed ac diam sit amet ipsum viverra rutrum eget convallis turpis. Phasellus a rutrum lacus. Cras diam justo, placerat a elementum a, laoreet nec nisi. Vivamus consectetur sed nisi vitae elementum. Duis vitae arcu vitae arcu fringilla interdum. Nulla vitae nunc vitae sapien pulvinar facilisis. Fusce ac sapien euismod, auctor nibh ac, finibus mauris.</p>
+        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum sit amet interdum dolor, id facilisis ex. Phasellus iaculis nisl magna, nec molestie nunc interdum sed. Nullam volutpat tincidunt velit vel tempus. Sed sit amet pellentesque sapien. Cras vitae mauris laoreet, volutpat nibh eget, mollis felis. Sed cursus nunc in mi consequat feugiat. Proin eget augue vitae risus blandit commodo sit amet in nisl. Sed ac diam sit amet ipsum viverra rutrum eget convallis turpis. Phasellus a rutrum lacus. Cras diam justo, placerat a elementum a, laoreet nec nisi. Vivamus consectetur sed nisi vitae elementum. Duis vitae arcu vitae arcu fringilla interdum. Nulla vitae nunc vitae sapien pulvinar facilisis. Fusce ac sapien euismod, auctor nibh ac, finibus mauris.</p>
+        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum sit amet interdum dolor, id facilisis ex. Phasellus iaculis nisl magna, nec molestie nunc interdum sed. Nullam volutpat tincidunt velit vel tempus. Sed sit amet pellentesque sapien. Cras vitae mauris laoreet, volutpat nibh eget, mollis felis. Sed cursus nunc in mi consequat feugiat. Proin eget augue vitae risus blandit commodo sit amet in nisl. Sed ac diam sit amet ipsum viverra rutrum eget convallis turpis. Phasellus a rutrum lacus. Cras diam justo, placerat a elementum a, laoreet nec nisi. Vivamus consectetur sed nisi vitae elementum. Duis vitae arcu vitae arcu fringilla interdum. Nulla vitae nunc vitae sapien pulvinar facilisis. Fusce ac sapien euismod, auctor nibh ac, finibus mauris.</p>
+        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum sit amet interdum dolor, id facilisis ex. Phasellus iaculis nisl magna, nec molestie nunc interdum sed. Nullam volutpat tincidunt velit vel tempus. Sed sit amet pellentesque sapien. Cras vitae mauris laoreet, volutpat nibh eget, mollis felis. Sed cursus nunc in mi consequat feugiat. Proin eget augue vitae risus blandit commodo sit amet in nisl. Sed ac diam sit amet ipsum viverra rutrum eget convallis turpis. Phasellus a rutrum lacus. Cras diam justo, placerat a elementum a, laoreet nec nisi. Vivamus consectetur sed nisi vitae elementum. Duis vitae arcu vitae arcu fringilla interdum. Nulla vitae nunc vitae sapien pulvinar facilisis. Fusce ac sapien euismod, auctor nibh ac, finibus mauris.</p>
+        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum sit amet interdum dolor, id facilisis ex. Phasellus iaculis nisl magna, nec molestie nunc interdum sed. Nullam volutpat tincidunt velit vel tempus. Sed sit amet pellentesque sapien. Cras vitae mauris laoreet, volutpat nibh eget, mollis felis. Sed cursus nunc in mi consequat feugiat. Proin eget augue vitae risus blandit commodo sit amet in nisl. Sed ac diam sit amet ipsum viverra rutrum eget convallis turpis. Phasellus a rutrum lacus. Cras diam justo, placerat a elementum a, laoreet nec nisi. Vivamus consectetur sed nisi vitae elementum. Duis vitae arcu vitae arcu fringilla interdum. Nulla vitae nunc vitae sapien pulvinar facilisis. Fusce ac sapien euismod, auctor nibh ac, finibus mauris.</p>
+        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum sit amet interdum dolor, id facilisis ex. Phasellus iaculis nisl magna, nec molestie nunc interdum sed. Nullam volutpat tincidunt velit vel tempus. Sed sit amet pellentesque sapien. Cras vitae mauris laoreet, volutpat nibh eget, mollis felis. Sed cursus nunc in mi consequat feugiat. Proin eget augue vitae risus blandit commodo sit amet in nisl. Sed ac diam sit amet ipsum viverra rutrum eget convallis turpis. Phasellus a rutrum lacus. Cras diam justo, placerat a elementum a, laoreet nec nisi. Vivamus consectetur sed nisi vitae elementum. Duis vitae arcu vitae arcu fringilla interdum. Nulla vitae nunc vitae sapien pulvinar facilisis. Fusce ac sapien euismod, auctor nibh ac, finibus mauris.</p>
+        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum sit amet interdum dolor, id facilisis ex. Phasellus iaculis nisl magna, nec molestie nunc interdum sed. Nullam volutpat tincidunt velit vel tempus. Sed sit amet pellentesque sapien. Cras vitae mauris laoreet, volutpat nibh eget, mollis felis. Sed cursus nunc in mi consequat feugiat. Proin eget augue vitae risus blandit commodo sit amet in nisl. Sed ac diam sit amet ipsum viverra rutrum eget convallis turpis. Phasellus a rutrum lacus. Cras diam justo, placerat a elementum a, laoreet nec nisi. Vivamus consectetur sed nisi vitae elementum. Duis vitae arcu vitae arcu fringilla interdum. Nulla vitae nunc vitae sapien pulvinar facilisis. Fusce ac sapien euismod, auctor nibh ac, finibus mauris.</p>
+        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum sit amet interdum dolor, id facilisis ex. Phasellus iaculis nisl magna, nec molestie nunc interdum sed. Nullam volutpat tincidunt velit vel tempus. Sed sit amet pellentesque sapien. Cras vitae mauris laoreet, volutpat nibh eget, mollis felis. Sed cursus nunc in mi consequat feugiat. Proin eget augue vitae risus blandit commodo sit amet in nisl. Sed ac diam sit amet ipsum viverra rutrum eget convallis turpis. Phasellus a rutrum lacus. Cras diam justo, placerat a elementum a, laoreet nec nisi. Vivamus consectetur sed nisi vitae elementum. Duis vitae arcu vitae arcu fringilla interdum. Nulla vitae nunc vitae sapien pulvinar facilisis. Fusce ac sapien euismod, auctor nibh ac, finibus mauris.</p>
+        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum sit amet interdum dolor, id facilisis ex. Phasellus iaculis nisl magna, nec molestie nunc interdum sed. Nullam volutpat tincidunt velit vel tempus. Sed sit amet pellentesque sapien. Cras vitae mauris laoreet, volutpat nibh eget, mollis felis. Sed cursus nunc in mi consequat feugiat. Proin eget augue vitae risus blandit commodo sit amet in nisl. Sed ac diam sit amet ipsum viverra rutrum eget convallis turpis. Phasellus a rutrum lacus. Cras diam justo, placerat a elementum a, laoreet nec nisi. Vivamus consectetur sed nisi vitae elementum. Duis vitae arcu vitae arcu fringilla interdum. Nulla vitae nunc vitae sapien pulvinar facilisis. Fusce ac sapien euismod, auctor nibh ac, finibus mauris.</p>
+
+
+        <script>
+            var dlg1 = document.querySelector('#dlg1');
+            var btn1 = document.querySelector('#btn1');
+            var dlg2 = document.querySelector('#dlg2');
+            var btn2 = document.querySelector('#btn2');
+            var btnClose = document.querySelector('#btnClose');
+            var btnClose2 = document.querySelector('#btnClose2');
+
+            btn1.addEventListener('click', function() {
+                dlg1.showModal() //Modal();
+            });
+
+            btn2.addEventListener('click', function() {
+                dlg2.showModal();
+            });
+
+            btnClose.addEventListener('click', function() {
+                var srch = document.querySelector('#inSearch');
+                dlg1.close(srch.value);
+            });
+
+            btnClose2.addEventListener('click', function() {
+                dlg2.close();
+            });
+
+            dlg1.addEventListener('close', function() {
+                console.log(dlg1.returnValue);
+            });
+        </script>
+    </body>
+</html>
