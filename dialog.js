@@ -442,8 +442,6 @@ angular.module('ayDialog', [])
 
                 el.hidden = false;
 
-                doPositioning(el, offset, false);
-
                 if (prevFocus && (prevFocus != $window.document.body)) {
                     prevFocus.blur();
                 }
@@ -454,6 +452,7 @@ angular.module('ayDialog', [])
 
                 requestAnimationFrame(function() {
                     el.open = true;
+                    doPositioning(el, offset, false);
 
                     if (!isSafariMobile) {
                         doFocus(el, true);
@@ -489,7 +488,6 @@ angular.module('ayDialog', [])
                 dialogStack.push(el);
                 backdropStack.push(backdrop);
 
-                doPositioning(el, offset, true);
                 doBackdrop();
 
                 restoreScroll = blockScrolling(offset);
@@ -504,6 +502,7 @@ angular.module('ayDialog', [])
 
                 requestAnimationFrame(function() {
                     el.open = true;
+                    doPositioning(el, offset, true);
 
                     if (!isSafariMobile) {
                         doFocus(el, true);
