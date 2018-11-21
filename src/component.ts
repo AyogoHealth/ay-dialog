@@ -1,4 +1,4 @@
-/*! Copyright (c) 2016 Ayogo Health Inc.
+/* Copyright 2019 Ayogo Health Inc.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -19,5 +19,7 @@
  * IN THE SOFTWARE.
  */
 
-import './dialog';
-export default 'ayDialog';
+import DialogElement from './dialog_element.js';
+import addDialogBehaviour from './dialog_additions.js';
+
+window.customElements.define('ay-dialog', addDialogBehaviour(<any>DialogElement));

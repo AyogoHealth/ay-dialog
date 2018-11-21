@@ -1,4 +1,4 @@
-# Copyright 2016 Ayogo Health Inc.
+# Copyright 2019 Ayogo Health Inc.
 
 .DS_Store
 .#*
@@ -10,3 +10,8 @@ log
 node_modules
 pkg
 tmp
+tests/dist
+index.js
+component.js
+polyfill.js
+*.js.map
