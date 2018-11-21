@@ -26,13 +26,21 @@
   "main": "dialog.js",
   "jsnext:main": "index.js",
   "typings": "index.d.ts",
-  "dependencies": {
-    "angular": "^1.4.0"
-  },
-  "peerDependencies": {
-    "angular": "^1.4.0"
+  "devDependencies": {
+    "@types/angular": "^1.4.0",
+    "angular": "^1.4.0",
+    "rollup": "^0.64.1",
+    "rollup-plugin-cleanup": "^3.0.0",
+    "rollup-plugin-sourcemaps": "^0.4.1",
+    "typescript": "^3.2.0-rc"
   },
   "scripts": {
+    "build:es6": "tsc -p tsconfig.es6.json",
+    "build:es5:base": "tsc -p tsconfig.es5.json && rollup dist-es5/index.js -n ayDialog -c rollup.config.js -o dist/index.js",
+    "build:es5:ng1": "tsc -p tsconfig.es5.json && rollup dist-es5/angular1.js -n ayDialog -c rollup.config.js -o dist/angular1.js",
+    "build:es5": "npm run build:es5:base && npm run build:es5:ng1",
+    "build": "npm run build:es6 && npm run build:es5",
+    "version": "npm run build && git add -A dist dist-es6",
     "postversion": "git push && git push --tags"
   }
 }
