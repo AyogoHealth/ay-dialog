@@ -36,9 +36,10 @@
   },
   "scripts": {
     "build:es6": "tsc -p tsconfig.es6.json",
-    "build:es5:base": "tsc -p tsconfig.es5.json && rollup dist-es5/index.js -n ayDialog -c rollup.config.js -o dist/index.js",
+    "build:es5:base": "tsc -p tsconfig.es5.json && rollup dist-es5/index.js -n AyDialog -c rollup.config.js -o dist/index.js",
     "build:es5:ng1": "tsc -p tsconfig.es5.json && rollup dist-es5/angular1.js -n ayDialog -c rollup.config.js -o dist/angular1.js",
-    "build:es5": "npm run build:es5:base && npm run build:es5:ng1",
+    "build:es5:vue": "tsc -p tsconfig.es5.json && rollup dist-es5/vue.js -c rollup.config.js -o dist/vue.js",
+    "build:es5": "npm run build:es5:base && npm run build:es5:ng1 && npm run build:es5:vue",
     "build": "npm run build:es6 && npm run build:es5",
     "version": "npm run build && git add -A dist dist-es6",
     "postversion": "git push && git push --tags"
