@@ -19,12 +19,13 @@
  * IN THE SOFTWARE.
  */
 
+import Vue from 'vue';
 import { DialogBehaviour } from './dialog_behaviour.js';
 
 Vue.component('dialog', {
     template: '<slot></slot>',
 
     mounted: function() {
-        new DialogBehaviour(this.$el);
+        new DialogBehaviour(this.$el as HTMLDialogElement);
     }
 });

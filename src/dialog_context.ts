@@ -21,8 +21,6 @@
 
 import { DialogBehaviour } from './dialog_behaviour.js';
 
-const kZIndexMax = Math.pow(2, 31) - 1;
-
 interface IStackingContextState {
     offset : number;
 
@@ -47,8 +45,6 @@ export class DialogContext {
 
         const offset = this.getScrollOffset();
         this.blockScrolling(offset);
-
-        this.assignDialogStacking();
     }
 
 
@@ -58,19 +54,11 @@ export class DialogContext {
         if (idx > -1) {
             this.unblockScrolling(idx);
             this.dialogStack.splice(idx, 1);
-
-            this.assignDialogStacking();
         }
     }
 
 
-    private static assignDialogStacking() {
-        for (let i = 0; i < this.dialogStack.length; i++) {
-            // Subtract two values for every dialog, to account for backdrop
-            this.dialogStack[i].setStacking(kZIndexMax - (2 * i));
-        }
-    }
-
+    /*
     private static dlgKeypressListener(e : KeyboardEvent) {
         // Escape
         if (e.keyCode === 27) {
@@ -81,6 +69,7 @@ export class DialogContext {
             }
         }
     }
+    */
 
 
     private static getScrollOffset() {

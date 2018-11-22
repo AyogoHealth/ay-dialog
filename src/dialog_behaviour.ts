@@ -32,12 +32,26 @@ var isSafariMobile : boolean = !!navigator.userAgent.match(/iP(ad|od|hone)/);
 
 
 var dialogStyles = `
-    dialog-sentinel,
-    [hidden] {
+    dialog-sentinel {
         display: none;
     }
 
+    dialog-backdrop {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.1);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        touch-action: none;
+        z-index: 2147483647;
+    }
+
     dialog {
+        display: block;
         position: absolute;
         left: 0;
         right: 0;
@@ -53,7 +67,6 @@ var dialogStyles = `
         background: white;
         color: black;
         border: solid;
-        visibility: hidden;
         overflow: auto;
         -webkit-overflow-scrolling: touch;
     }
@@ -62,21 +75,8 @@ var dialogStyles = `
         outline: 0 none;
     }
 
-    dialog[open] {
-        visibility: visible;
-    }
-`;
-
-
-var backdropStyles = `
-    dialog[open] + .backdrop {
-        position: fixed;
-        top: 0;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        background: rgba(0, 0, 0, 0.1);
-        touch-action: none;
+    dialog:not([open]) {
+        display: none;
     }
 `;
 
@@ -84,8 +84,6 @@ var backdropStyles = `
 export class DialogBehaviour {
     private el: HTMLDialogElement;
     private opener : (HTMLElement | null) = null;
-    private backdrop : (HTMLElement | null) = null;
-    private sentinel : (HTMLElement | null) = null;
 
 
     constructor(dlg : HTMLDialogElement) {
@@ -93,7 +91,7 @@ export class DialogBehaviour {
 
 
         if (!stylesAdded && !('HTMLDialogElement' in window)) {
-            this.addStyles();
+            this.addStyles(dialogStyles);
 
             (window as any).HTMLDialogElement = DialogElement;
         }
@@ -127,13 +125,17 @@ export class DialogBehaviour {
         return this.el.ownerDocument;
     }
 
+    public get height() {
+        return this.el.offsetHeight;
+    }
+
+
+    public setPosition(top : number) {
+        this.el.style.top = `${top}px`;
+    }
 
     public setStacking(zOffset : number) {
         this.el.style.zIndex = `${zOffset}`;
-
-        if (this.backdrop) {
-            this.backdrop.style.zIndex = `${zOffset - 1}`;
-        }
     }
 
 
@@ -186,6 +188,7 @@ export class DialogBehaviour {
 
     private doDialogClose() {
         this.el.open = false;
+        this.el.style.removeProperty('top');
 
         DialogContext.closeDialog(this);
 
@@ -229,14 +232,20 @@ export class DialogBehaviour {
 
 
     private polyfillShowMethod() {
-        if ('show' in this.el) {
-            return;
-        }
-
         Object.defineProperty(this.el, 'show', {
             configurable: false,
             writable: false,
-            value: ((window as any).HTMLDialogElement.prototype as HTMLDialogElement).show.bind(this.el)
+            value: () => {
+                this.opener = (this.el.ownerDocument || window.document).activeElement as HTMLElement;
+
+                if (this.opener && this.opener.nodeName !== 'BODY') {
+                    this.opener.blur();
+                }
+
+                ((window as any).HTMLDialogElement.prototype as HTMLDialogElement).show.call(this.el);
+
+                this.doDialogFocus(!isSafariMobile);
+            }
         });
     }
 
@@ -246,14 +255,23 @@ export class DialogBehaviour {
             configurable: false,
             writable: false,
             value: () => {
+                // Hide the dialog during our positioning/measuring
+                //this.el.style.setProperty('visibility', 'hidden');
+
                 this.opener = (this.el.ownerDocument || window.document).activeElement as HTMLElement;
+
+                if (this.opener && this.opener.nodeName !== 'BODY') {
+                    this.opener.blur();
+                }
 
                 DialogContext.openDialog(this);
 
                 ((window as any).HTMLDialogElement.prototype as HTMLDialogElement).showModal.call(this.el);
 
+                this.doDialogFocus(!isSafariMobile);
+
                 //requestAnimationFrame(() => {
-                    this.doDialogFocus(!isSafariMobile);
+                //    this.el.style.removeProperty('visibility');
                 //});
             }
         });
@@ -273,11 +291,11 @@ export class DialogBehaviour {
     }
 
 
-    private addStyles() {
+    private addStyles(styles : string) {
         stylesAdded = true;
 
         let dlgStyle = document.createElement('style');
-        dlgStyle.appendChild(document.createTextNode(dialogStyles + backdropStyles));
+        dlgStyle.appendChild(document.createTextNode(styles));
 
         let insertPoint : HTMLElement | null;
         if (insertPoint = document.querySelector('link')) {
