@@ -333,6 +333,7 @@ angular.module('ayDialog', [])
                         checkUnblockScrolling();
                     }
 
+                    restoreScroll();
                     el.removeEventListener('close', checkUnblockScrolling);
                     el.removeEventListener('cancel', checkUnblockScrolling);
                     el = null;
