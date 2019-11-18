@@ -1,0 +1,9 @@
+# Copyright 2019 Ayogo Health Inc.
+
+node_modules/
+tests/
+coverage/
+rollup.config.js
+component.js
+index.js
+polyfill.js

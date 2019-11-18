@@ -1,0 +1,30 @@
+{
+  "copyright": "Copyright 2019 Ayogo Health Inc.",
+  "compilerOptions": {
+    "alwaysStrict": true,
+    "declaration": false,
+    "forceConsistentCasingInFileNames": true,
+    "lib": ["es2015", "dom"],
+    "module": "es2015",
+    "noFallthroughCasesInSwitch": true,
+    "noImplicitAny": true,
+    "noImplicitReturns": true,
+    "noImplicitThis": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noLib": false,
+    "outDir": "dist-es6",
+    "removeComments": true,
+    "strictBindCallApply": true,
+    "strictFunctionTypes": true,
+    "strictPropertyInitialization": true,
+    "strictNullChecks": true,
+    "stripInternal": true,
+    "sourceMap": true,
+    "target": "es6"
+  },
+
+  "include": [
+    "./src/**/*.ts"
+  ]
+}

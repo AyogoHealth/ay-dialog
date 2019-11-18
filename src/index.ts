@@ -1,4 +1,4 @@
-/*! Copyright (c) 2016 Ayogo Health Inc.
+/* Copyright 2019 Ayogo Health Inc.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -19,18 +19,7 @@
  * IN THE SOFTWARE.
  */
 
-export interface HTMLDialogElement extends HTMLElement {
-    open: boolean,
-    returnValue: any,
-    close: (returnValue?: any)=>void,
-    show: ()=>void,
-    showModal: ()=>void
-}
+import './polyfill.js';
+import addDialogBehaviour from './dialog_additions.js';
 
-export declare var HTMLDialogElement: {
-    prototype: HTMLDialogElement;
-    new(): HTMLDialogElement;
-};
-
-declare var _default: string;
-export default _default;
+addDialogBehaviour(window.HTMLDialogElement);

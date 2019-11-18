@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<meta charset=utf-8>
+<script src="./dist/polyfill.js"></script>
+<script src="/resources/testharness.js"></script>
+<script src="/resources/testharnessreport.js"></script>
+<script src="./resources/utils.js"></script>
+<body>
+<dialog></dialog>
+<script>
+// https://github.com/whatwg/html/issues/4788
+promise_test(function() {
+  const dialog = document.querySelector('dialog');
+  dialog.show();
+  dialog.close();
+  const input = document.createElement('input');
+  input.autofocus = true;
+  document.body.insertBefore(input, dialog);
+
+  return waitUntilStableAutofocusState().then(function() {
+    assert_equals(document.activeElement, document.body,
+        'Non-dialog autofocus processing should be skipped.');
+  });
+}, 'After showing a dialog, non-dialog autofocus processing won\'t work.');
+</script>
+</body>

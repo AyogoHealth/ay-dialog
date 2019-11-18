@@ -1,81 +1,102 @@
-ayDialog
-========
+# ayDialog
 
-An HTML5 spec-compliant &lt;dialog&gt; polyfill built with Angular 1.x.
-
-<small>Copyright © 2016 Ayogo Health Inc.</small>
+An HTML5 spec-compliant `dialog` element polyfill.
 
 
-Features
---------
+## Features
 
-* Automatic upgrading of `dialog` elements via Angular directive
-* Support for API methods (`show()`, `showModal()`, `close()`, `returnValue`)
-* Compatible with native `dialog` support in Chrome
+* Automatic support for `dialog` elements in the page
+* Support for `HTMLDialogElement` API methods
+* Compatible with native `dialog` support in Chrome and Firefox
 * Support for normal and modal dialogs (with backdrops)
-* Proper focus handling and disabling of background content for accessibility
+* Proper focus trapping and disabling of background content for accessibility
+* Browser support includes IE11 and Edge, Chrome, Firefox, and Safari
+    * `Element.closest()` polyfill (not included) required for IE11 and Edge <15
 
-Usage
------
+### Additional (non-standard) Features
 
-To get started, install the package from npm: `npm install ay-dialog`
+* Block scrolling while a modal dialog is open
+* Restoring focus when a modal dialog is closed
+* Automatic closing of the dialog when the backdrop is clicked
 
-### Basic Usage
 
-Add a script tag to your page to reference the dialog.js file:
+## Installation
 
-```html
-<script src="node_modules/ay-dialog/dialog.js"></script>
+The polyfill can be installed from npm:
+
+```bash
+npm install ay-dialog
 ```
 
-Reference the module in your Angular app's dependencies:
+
+## Usage
+
+There are 3 varieties included in the package, offering a polyfill for strictly
+the spec-compliant behaviour, a polyfill with additional features, and a Web
+Component custom element.
+
+### Polyfill with Extras
+
+A polyfill implementation of the `<dialog>` element and additional behaviour in
+all modern browsers.
 
 ```javascript
-angular.module(myApp, ['ayDialog'])
+// ES6 import:
+import 'ay-dialog/index.js';
+
+// CommonJS require:
+require('ay-dialog');
 ```
 
-### ES5 with Browserify
+### Pure Spec Polyfill
 
-Reference the module in your Angular app's dependencies:
+A polyfill implementation for the `<dialog>` element in all modern browsers,
+matching spec behaviour as closely as possible. No extra behaviour.
 
 ```javascript
-var ayDialog = require('ay-dialog').default;
+// ES6 import:
+import 'ay-dialog/polyfill.js';
 
-angular.module(myApp, [ayDialog])
+// CommonJS require:
+require('ay-dialog/polyfill');
 ```
 
-### ES6 / TypeScript
+### `ay-dialog` Custom Element
 
-Reference the module in your Angular app's dependencies:
+An implementation of the dialog spec and additional behaviour as a
+`<ay-dialog>` custom element. This only works in modern browsers with support
+for HTML custom elements.
 
-```typescript
-import ayDialog from 'ay-dialog';
+```javascript
+// ES6 import:
+import 'ay-dialog/component.js';
 
-angular.module(myApp, [ayDialog])
+// CommonJS require:
+require('ay-dialog/component');
 ```
 
-A TypeScript module definition is included, which also provides typings for the
-HTMLDialogElement interface.
+
+## Tests
+
+This project is tested against the [Web Platform
+Tests](https://web-platform-tests.org/) for the HTML5 `dialog` element.
+
+See the `tests` folder for test cases and instructions for running tests in a
+browser.
 
 
-Styling
--------
+## Contributing
 
-It's not possible to implement the backdrop as a pseudo-element (as it is in native implementations), so the backdrop is added as a sibling element with a `.backdrop` class.
+Contributions of bug reports, feature requests, and pull requests are greatly
+appreciated!
 
-Note that you need two separate selectors to support both `.backdrop` and `::backdrop`, otherwise browsers that don't recognize the pseudo-element will skip the CSS block entirely!
+Please note that this project is released with a [Contributor Code of
+Conduct](https://github.com/AyogoHealth/ay-dialog/blob/master/CODE_OF_CONDUCT.md).
+By participating in this project you agree to abide by its terms.
 
-```css
-dialog + .backdrop {
-    background: rgba(1, 0, 0, 0.1);
-}
 
-dialog::backdrop {
-    background: rgba(1, 0, 0, 0.1);
-}
-```
+## Licence
 
-Notes
------
+Released under the MIT Licence.
 
-Released under the terms of the [MIT License](LICENSE).
+Copyright © 2019 Ayogo Health Inc.
