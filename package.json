@@ -4,7 +4,7 @@
   "copyright": "Copyright 2019 Ayogo Health Inc.",
   "license": "MIT",
   "homepage": "https://ayogo.com",
-  "version": "2.0.0-dev",
+  "version": "2.0.0-beta.1",
   "description": "An HTML5 spec-compliant <dialog> polyfill.",
   "repository": {
     "type": "git",
