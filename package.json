@@ -33,12 +33,12 @@
     "Sam Evanuk <samevanuk@gmail.com>"
   ],
   "devDependencies": {
-    "@typescript-eslint/eslint-plugin": "^2.7.0",
-    "@typescript-eslint/parser": "^2.7.0",
+    "@typescript-eslint/eslint-plugin": "^2.8.0",
+    "@typescript-eslint/parser": "^2.8.0",
     "copyfiles": "^2.1.1",
     "eslint": "^6.5.1",
     "eslint-plugin-header": "^3.0.0",
-    "rollup": "^1.27.0",
+    "rollup": "^1.27.2",
     "rollup-plugin-cleanup": "^3.0.0",
     "rollup-plugin-sourcemaps": "^0.4.1",
     "rollup-plugin-typescript2": "^0.25.2",
@@ -50,6 +50,8 @@
     "lint": "eslint --ext .ts,.js .",
     "test": "npm run lint && rollup -c --environment OUTPUT_PATH:tests/dist && echo \"\nTODO: Run the WPT tests using WebDriver\"",
     "test-server": "rollup -c --environment OUTPUT_PATH:tests/dist && wpt-server tests --root-url=tests --port=1337",
-    "postversion": "git push && git push --tags"
+    "preversion": "npm run lint",
+    "version": "npm run build",
+    "postversion": "git push && git push --tag"
   }
 }
