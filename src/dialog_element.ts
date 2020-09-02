@@ -571,6 +571,7 @@ if (!('remove' in AyDialogElement.prototype)) {
 Object.defineProperty(AyDialogElement.prototype, 'connectedCallback', {
   configurable: true,
   enumerable: false,
+  writable: true,
   value: function(this : HTMLDialogElement) {
     if (!initialized) {
       initialized = true;
