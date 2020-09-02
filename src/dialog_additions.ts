@@ -89,6 +89,22 @@ export default function (DialogElement : typeof HTMLDialogElement) {
   };
 
 
+  // Overriding behaviour for connectedCallback(): (if it exists)
+  //
+  // * Add tabindex to force the dialog to be focusable
+  const _connectedCallback = (DialogElement.prototype as any)['connectedCallback'];
+  if (_connectedCallback) {
+    (DialogElement.prototype as any)['connectedCallback'] = function(this : HTMLDialogElement) {
+      _connectedCallback.apply(this, arguments as any);
+
+      // Ensure the dialog is focusable
+      if (!this.hasAttribute('tabindex')) {
+        this.tabIndex = -1;
+      }
+    };
+  }
+
+
   // Overriding behaviour for disconnectedCallback(): (if it exists)
   //
   // * Remove the backdrop click event listener

@@ -189,11 +189,6 @@ function dialogFocusSteps(dialog : HTMLDialogElement, focusChild : boolean) {
     control = dialog;
   }
 
-  const active = document.activeElement;
-  if (active && ('blur' in active) && active !== document.body) {
-    (active as HTMLElement).blur();
-  }
-
   control.focus();
 }
 
@@ -305,6 +300,14 @@ function applyInertness() {
       origAriaHidden.set(el, el.getAttribute('aria-hidden'));
       el.setAttribute('aria-hidden', 'true');
     }
+
+    const active = document.activeElement;
+    if (el.contains(active)) {
+      if (active && ('blur' in active) && active !== document.body) {
+        (active as HTMLElement).blur();
+      }
+      document.body.focus();
+    }
   }
 
   const topEl = topLayerStack[topLayerStack.length - 1];
@@ -322,7 +325,17 @@ function applyInertness() {
 
 
 function checkInertFocus(evt : FocusEvent) {
-  const topEl = topLayerStack[topLayerStack.length - 1];
+  let topEl;
+
+  for (let i = topLayerStack.length; i > 0; i--) {
+    topEl = topLayerStack[i - 1];
+
+    // Edge case where a dialog is removed and then code is run before the
+    // mutation observer kicks in
+    if (topEl.isConnected) {
+      break;
+    }
+  }
 
   if (!(topEl instanceof AyDialogElement)) {
     return;
@@ -579,11 +592,6 @@ Object.defineProperty(AyDialogElement.prototype, 'connectedCallback', {
     if (!this.hasAttribute('role')) {
       this.setAttribute('role', 'dialog');
     }
-
-    // Ensure the dialog is focusable
-    if (!this.hasAttribute('tabindex')) {
-      this.tabIndex = -1;
-    }
   }
 });
 
@@ -613,6 +621,12 @@ Object.defineProperty(AyDialogElement.prototype, 'disconnectedCallback', {
     }
 
     this.removeEventListener('keydown', escapeKeyHandler);
+
+    const idx = topLayerStack.indexOf(this);
+    if (idx >= 0) {
+      topLayerStack.splice(idx, 1);
+      applyInertness();
+    }
 
     if (sentinelMap.has(this)) {
       const sentinel = sentinelMap.get(this);
