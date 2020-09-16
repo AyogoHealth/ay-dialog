@@ -36,7 +36,7 @@ module.exports = {
 
     "header/header": [2, "block", { "pattern": "Copyright \\d{4} Ayogo Health Inc." }],
 
-    "@typescript-eslint/class-name-casing": "warn",
+    "@typescript-eslint/naming-convention": ["warn", { selector: "class", format: ["PascalCase"] }],
     "@typescript-eslint/indent": ["error", 2],
     "@typescript-eslint/no-namespace": "error"
   }
