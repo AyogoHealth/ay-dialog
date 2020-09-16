@@ -1,4 +1,4 @@
-/* Copyright 2019 Ayogo Health Inc.
+/* Copyright 2020 Ayogo Health Inc.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to

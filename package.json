@@ -1,7 +1,7 @@
 {
   "name": "ay-dialog",
   "author": "Ayogo Health Inc. <opensource@ayogo.com>",
-  "copyright": "Copyright 2019 Ayogo Health Inc.",
+  "copyright": "Copyright 2020 Ayogo Health Inc.",
   "license": "MIT",
   "homepage": "https://ayogo.com",
   "version": "2.0.0-beta.1",
@@ -33,17 +33,17 @@
     "Sam Evanuk <samevanuk@gmail.com>"
   ],
   "devDependencies": {
-    "@typescript-eslint/eslint-plugin": "^2.27.0",
-    "@typescript-eslint/parser": "^2.27.0",
+    "@typescript-eslint/eslint-plugin": "^4.1.1",
+    "@typescript-eslint/parser": "^4.1.1",
     "copyfiles": "^2.2.0",
-    "eslint": "^6.8.0",
+    "eslint": "^7.9.0",
     "eslint-plugin-header": "^3.0.0",
-    "rollup": "^2.3.3",
+    "rollup": "^2.26.11",
     "rollup-plugin-cleanup": "^3.0.0",
-    "rollup-plugin-sourcemaps": "^0.5.0",
+    "rollup-plugin-sourcemaps": "^0.6.2",
     "rollup-plugin-typescript2": "^0.27.0",
-    "typescript": "^3.8.3",
-    "wpt-runner": "github:dpogue/wpt-runner#sub"
+    "typescript": "^4.0.2",
+    "wpt-runner": "github:dpogue/wpt-runner#sub2"
   },
   "scripts": {
     "build": "rollup -c",

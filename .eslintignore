@@ -7,3 +7,4 @@ rollup.config.js
 component.js
 index.js
 polyfill.js
+.eslintrc.js
