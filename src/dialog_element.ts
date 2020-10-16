@@ -19,6 +19,9 @@
  * IN THE SOFTWARE.
  */
 
+// Use a unique attribute to indicate modal dialogs
+const RANDOM_MODAL_KEY = '__modal_' + (btoa(Math.random().toString()).slice(0, 5).toLowerCase());
+
 const POLYFILL_STYLES = [
   'dialog-sentinel {',
   '    display: none;',
@@ -27,21 +30,31 @@ const POLYFILL_STYLES = [
   'dialog-backdrop {',
   '    position: fixed;',
   '    top: 0;',
+  '    inset-block-start: 0;',
   '    left: 0;',
+  '    inset-inline-start: 0;',
   '    height: 100vh;',
   '    width: 100vw;',
   '    background: rgba(0, 0, 0, 0.1);',
-  '    display: flex;',
-  '    justify-content: center;',
-  '    justify-content: safe center;',
-  '    align-items: center;',
-  '    align-items: safe center;',
   '    overflow: auto;',
   '    overscroll-behavior: contain;',
   '    touch-action: none;',
   '    z-index: 2147483647;',
   '    -webkit-overflow-scrolling: touch;',
   '    isolation: isolate;',
+  '}',
+  '',
+  'dialog[' + RANDOM_MODAL_KEY + '],',
+  'ay-dialog[' + RANDOM_MODAL_KEY + '] {',
+  '    position: fixed;',
+  '    overflow: auto;',
+  '    top: 0;',
+  '    inset-block-start: 0;',
+  '    bottom: 0;',
+  '    inset-block-end: 0;',
+  '    max-width: calc(100% - 6px - 2em);',
+  '    max-height: calc(100% - 6px - 2em);',
+  '    -webkit-overflow-scrolling: touch;',
   '}'
 ].join('\n');
 
@@ -49,10 +62,10 @@ const DIALOG_STYLES = [
   'dialog, ay-dialog {',
   '    display: block;',
   '    position: absolute;',
-  '    top: auto;',
-  '    bottom: auto;',
-  '    left: auto;',
-  '    right: auto;',
+  '    left: 0;',
+  '    inset-inline-start: 0;',
+  '    right: 0;',
+  '    inset-inline-end: 0;',
   '    width: -webkit-fit-content;',
   '    width: -moz-fit-content;',
   '    width: fit-content;',
@@ -66,15 +79,12 @@ const DIALOG_STYLES = [
   '    inline-size: -moz-fit-content;',
   '    inline-size: fit-content;',
   '    margin: auto !important;',
-  '    max-height: 100vh;',
+  '    border: solid;',
   '    padding: 1em;',
   '    background: white;',
   '    background: -apple-system-text-background;',
   '    color: black;',
   '    color: text;',
-  '    border: solid;',
-  '    overflow: auto;',
-  '    -webkit-overflow-scrolling: touch;',
   '}',
   '',
   'dialog:focus, ay-dialog:focus {',
@@ -269,7 +279,7 @@ function escapeKeyHandler(evt : KeyboardEvent) {
 
   const dlg = (evt.target as HTMLElement).closest('dialog,ay-dialog') as HTMLDialogElement;
 
-  if (!dlg || !dlg.open || !backdropMap.has(dlg)) {
+  if (!dlg || !backdropMap.has(dlg)) {
     return;
   }
 
@@ -283,7 +293,7 @@ function escapeKeyHandler(evt : KeyboardEvent) {
 
   // Native events are dispatched asynchronously
   requestAnimationFrame(function() {
-    if (dlg.dispatchEvent(cancel)) {
+    if (dlg.dispatchEvent(cancel) && dlg.open) {
       dlg.close();
     }
   });
@@ -455,7 +465,7 @@ Object.defineProperty(AyDialogElement.prototype, 'showModal', {
     }
 
     this.setAttribute('open', '');
-
+    this.setAttribute(RANDOM_MODAL_KEY, '');
 
     if (!sentinelMap.has(this)) {
       const sentinel = this.ownerDocument!.createElement('dialog-sentinel');
@@ -500,6 +510,7 @@ Object.defineProperty(AyDialogElement.prototype, 'close', {
     }
 
     this.removeAttribute('open');
+    this.removeAttribute(RANDOM_MODAL_KEY);
 
     const result = arguments && arguments[0];
 
