@@ -26,7 +26,7 @@ function backdropClickHandler(evt : MouseEvent) {
 
   const dlg = (evt.target as HTMLElement).closest('dialog,ay-dialog') as HTMLDialogElement;
 
-  if (!dlg || !dlg.open) {
+  if (!dlg) {
     return;
   }
 
@@ -50,7 +50,7 @@ function backdropClickHandler(evt : MouseEvent) {
 
   // Native events are dispatched asynchronously
   requestAnimationFrame(function() {
-    if (dlg.dispatchEvent(cancel)) {
+    if (dlg.dispatchEvent(cancel) && dlg.open) {
       dlg.close();
     }
   });
