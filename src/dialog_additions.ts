@@ -57,8 +57,16 @@ function backdropClickHandler(evt : MouseEvent) {
 }
 
 
+declare class WebComponentizedDialog extends HTMLDialogElement {
+  static readonly observedAttributes? : Array<string>;
 
-export default function (DialogElement : typeof HTMLDialogElement) {
+  connectedCallback? : () => void;
+  adoptedCallback? : () => void;
+  disconnectedCallback? : (oldDocument : Document, newDocument : Document) => void;
+  attributeChangedCallback? : (name : string, oldValue : string, newValue : string) => void;
+}
+
+export default function (DialogElement : typeof WebComponentizedDialog) {
   // Set the undocumented property to keep focus on the dialog when opening
   Object.defineProperty(DialogElement, '_focusChildrenOnOpen', {
     enumerable: false,
@@ -92,9 +100,9 @@ export default function (DialogElement : typeof HTMLDialogElement) {
   // Overriding behaviour for connectedCallback(): (if it exists)
   //
   // * Add tabindex to force the dialog to be focusable
-  const _connectedCallback = (DialogElement.prototype as any)['connectedCallback'];
+  const _connectedCallback = DialogElement.prototype.connectedCallback;
   if (_connectedCallback) {
-    (DialogElement.prototype as any)['connectedCallback'] = function(this : HTMLDialogElement) {
+    DialogElement.prototype.connectedCallback = function(this : HTMLDialogElement) {
       _connectedCallback.apply(this, arguments as any);
 
       // Ensure the dialog is focusable
@@ -108,9 +116,9 @@ export default function (DialogElement : typeof HTMLDialogElement) {
   // Overriding behaviour for disconnectedCallback(): (if it exists)
   //
   // * Remove the backdrop click event listener
-  const _disconnectedCallback = (DialogElement.prototype as any)['disconnectedCallback'];
+  const _disconnectedCallback = DialogElement.prototype.disconnectedCallback;
   if (_disconnectedCallback) {
-    (DialogElement.prototype as any)['disconnectedCallback'] = function(this : HTMLDialogElement) {
+    DialogElement.prototype.disconnectedCallback = function(this : HTMLDialogElement) {
       _disconnectedCallback.apply(this, arguments as any);
 
       if ((('isConnected' in this) && this.isConnected) || (this.ownerDocument!.documentElement.contains(this))) {
