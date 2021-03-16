@@ -6,7 +6,7 @@ Element, along with some extra test cases and demo pages.
 To try these in a browser, run `npm run test-server` and navigate to
 http://localhost:1337/tests/
 
-**Last imported from wpt:** 2020-11-09
+**Last imported from wpt:** 2021-03-15
 
 ### Modifications
 
