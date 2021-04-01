@@ -6,7 +6,7 @@ Element, along with some extra test cases and demo pages.
 To try these in a browser, run `npm run test-server` and navigate to
 http://localhost:1337/tests/
 
-**Last imported from wpt:** 2021-03-15
+**Last imported from wpt:** 2021-03-31
 
 ### Modifications
 
@@ -79,7 +79,7 @@ additionally modified as follows:
 
 * show-modal-focusing-steps.html
     * Added `meta charset=utf-8`
-    * Commented out the first assertion due to buggy WebKit autofocus behaviour
+    * Manually set initial focus due to buggy WebKit autofocus behaviour
     * Changed arrow functions to `function` notation for IE11
 
 ### Extra Tests & Demos

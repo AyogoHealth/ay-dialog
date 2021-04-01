@@ -566,18 +566,21 @@ Object.defineProperty(AyDialogElement.prototype, 'close', {
 
 
 // IE11 doesn't implement Element#remove, but the tests require it :\
-if (!('remove' in AyDialogElement.prototype)) {
-  Object.defineProperty(AyDialogElement.prototype, 'remove', {
-    configurable: true,
-    enumerable: true,
-    writable: true,
-    value: function(this : HTMLDialogElement) {
-      if (this.parentNode) {
-        this.parentNode.removeChild(this);
-      }
+// Also, mutation observers don't fire synchronously, so again for tests we're
+// going to forcibly define this so that it always runs the
+// disconnectedCallback to properly clean up the dialog element state :\
+Object.defineProperty(AyDialogElement.prototype, 'remove', {
+  configurable: true,
+  enumerable: true,
+  writable: true,
+  value: function(this : HTMLDialogElement) {
+    if (this.parentNode) {
+      this.parentNode.removeChild(this);
     }
-  });
-}
+
+    (<any> this)['disconnectedCallback']();
+  }
+});
 
 Object.defineProperty(AyDialogElement.prototype, 'connectedCallback', {
   configurable: true,
@@ -639,6 +642,8 @@ Object.defineProperty(AyDialogElement.prototype, 'disconnectedCallback', {
       topLayerStack.splice(idx, 1);
       applyInertness();
     }
+
+    this.removeAttribute(RANDOM_MODAL_KEY);
 
     if (sentinelMap.has(this)) {
       const sentinel = sentinelMap.get(this);

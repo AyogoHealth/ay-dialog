@@ -10,10 +10,12 @@
 promise_test(function() {
   return waitUntilLoadedAndAutofocused().then(function() {
         outerButton = document.getElementById('outer-button');
-        // 2019-11-11 - Commented out until Webkit autofocus behaviour is
+        // 2021-03-31 - Manually focused until Webkit autofocus behaviour is
         // resolved: https://bugs.webkit.org/show_bug.cgi?id=203139
-        //
-        //assert_equals(document.activeElement, outerButton);
+        if (document.activeElement !== outerButton) {
+            outerButton.focus();
+        }
+        assert_equals(document.activeElement, outerButton);
 
         // Test that focus goes to body if the dialog has no focusable elements, including itself
         var outerDialog = document.getElementById('outer-dialog');
