@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <meta charset=urf-8>
+<meta name=viewport content="width=device-width,initial-scale=1">
 <title>Test dialog form submission</title>
 <script src="./dist/polyfill.js"></script>
 <script src="/resources/testharness.js"></script>
@@ -55,7 +56,7 @@ test(function() {
   button.removeAttribute("value");
   button.click();
   assert_false(dialog.open, "dialog should be closed now");
-  assert_false(dialog.returnValue === undefined, "returnValue should not be set");
+  assert_not_equals(dialog.returnValue, undefined, "returnValue should not be set");
 }, "no returnValue when there's no result.");
 
 promise_test(function() {
