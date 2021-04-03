@@ -174,8 +174,13 @@ function addStyles(styles : string) {
 
 
 // Run dialog focusing steps
-export function dialogFocusSteps(dialog : HTMLDialogElement, focusChild : boolean = true) {
+export function dialogFocusSteps(dialog : HTMLDialogElement, focusChild? : boolean) {
   let control : HTMLElement | null = null;
+
+  // IE11 can't handle default param values
+  if (focusChild === undefined) {
+    focusChild = true;
+  }
 
   const autofocuses = dialog.querySelectorAll<HTMLElement>('[autofocus]:not(:disabled):not([tabindex^="-"]):not([inert])');
   for (let i = 0; i < autofocuses.length; i++) {

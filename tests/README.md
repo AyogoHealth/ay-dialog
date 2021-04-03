@@ -20,11 +20,13 @@ additionally modified as follows:
 * centering.html
     * Changed arrow functions to `function` notation for IE11
     * Changed backtick strings to quoted strings for IE11
+    * Changed for...of to for loop for IE11
 
 * dialog.html
     * Added `meta charset=utf-8`
     * Changed arrow functions to `function` notation for IE11
     * Changed backtick strings to quoted strings for IE11
+    * Changed for...of to for loop for IE11
     * Replaced `fit-content` check with regex for Firefox
 
 * dialog-autofocus-just-once.html
@@ -82,6 +84,13 @@ additionally modified as follows:
     * Manually set initial focus due to buggy WebKit autofocus behaviour
     * Changed arrow functions to `function` notation for IE11
 
+* resources/common.js
+    * Set loaded based on document readyState (IE11 seems to fire load early)
+    * Workaround for IE11's lack of autofocus support
+
+* resources/utils.js
+    * Changed arrow functions to `function` notation for IE11
+
 ### Extra/Proposed Web Platform Tests
 
 Most of these are taken from Firefox patches that have not landed in the WHATWG
@@ -94,6 +103,8 @@ spec yet.
 * xspec-focus-after-close.html
     This includes the polyfill with additions and verifies that focus is
     returned to the previous element when the dialog is closed.
+
+    * Changed input removal to work in IE11
 
 * xspec-inert-node-is-unfocusable.html
     This includes the polyfill with additions and verifies that the dialog

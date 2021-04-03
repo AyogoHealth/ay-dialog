@@ -39,7 +39,7 @@ function test_move_to_body_if_fails(showModal) {
     dialog.show();
   }
   dialog.close();
-  input.remove();
+  input.parentNode.removeChild(input);
   assert_equals(document.activeElement, document.body);
   document.body.appendChild(input);
 }

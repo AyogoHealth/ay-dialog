@@ -33,7 +33,8 @@ testDialogCentering("vertical-rl", "horizontal-tb", "vertical-rl", "tall viewpor
 
 function testDialogCentering(writingMode, containerWritingMode, dialogWritingMode, label, iframeWidth, iframeHeight) {
   const dialogSizesToTest = [["", ""], [dialogWidth.toString()+'px', dialogHeight.toString()+'px']];
-  for (const dialogSizes of dialogSizesToTest) {
+  for (let i = 0; i < dialogSizesToTest.length; i++) {
+    const dialogSizes = dialogSizesToTest[i];
     const isDefaultSize = dialogSizes[0] == "";
     // This test doesn't make sense if the dialog sizes are default
     if (isDefaultSize && label == "dialog and viewport match") {

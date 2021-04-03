@@ -34,7 +34,9 @@ setup(function() {
 }, {explicit_done: true});
 
 onload = function() {
-  for (let iframe of document.querySelectorAll('iframe')) {
+  const frames = document.querySelectorAll('iframe');
+  for (let i = 0; i < frames.length; i++) {
+    const iframe = frames[i];
     const win = iframe.contentWindow;
     const styleAttr = iframe.getAttribute('style');
     const iframeWidth = parseInt(styleAttr.split(' ')[1]);
