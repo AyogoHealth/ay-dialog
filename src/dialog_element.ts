@@ -174,10 +174,7 @@ function addStyles(styles : string) {
 
 
 // Run dialog focusing steps
-function dialogFocusSteps(dialog : HTMLDialogElement, focusChild : boolean) {
-  if (focusChild === undefined) {
-    focusChild = true;
-  }
+export function dialogFocusSteps(dialog : HTMLDialogElement, focusChild : boolean = true) {
   let control : HTMLElement | null = null;
 
   const autofocuses = dialog.querySelectorAll<HTMLElement>('[autofocus]:not(:disabled):not([tabindex^="-"]):not([inert])');
@@ -440,7 +437,7 @@ Object.defineProperty(AyDialogElement.prototype, 'show', {
 
     this.setAttribute('open', '');
 
-    dialogFocusSteps(this, (<any>AyDialogElement)._focusChildrenOnOpen);
+    dialogFocusSteps(this);
   }
 });
 
@@ -491,7 +488,7 @@ Object.defineProperty(AyDialogElement.prototype, 'showModal', {
     topLayerStack.push(this);
     applyInertness();
 
-    dialogFocusSteps(this, (<any>AyDialogElement)._focusChildrenOnOpen);
+    dialogFocusSteps(this);
   }
 });
 

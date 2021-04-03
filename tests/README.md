@@ -82,7 +82,28 @@ additionally modified as follows:
     * Manually set initial focus due to buggy WebKit autofocus behaviour
     * Changed arrow functions to `function` notation for IE11
 
-### Extra Tests & Demos
+### Extra/Proposed Web Platform Tests
+
+Most of these are taken from Firefox patches that have not landed in the WHATWG
+spec yet.
+
+* xspec-dialog-showModal.html
+    This includes the polyfill with additions and verifies that the dialog
+    receives focus.
+
+* xspec-focus-after-close.html
+    This includes the polyfill with additions and verifies that focus is
+    returned to the previous element when the dialog is closed.
+
+* xspec-inert-node-is-unfocusable.html
+    This includes the polyfill with additions and verifies that the dialog
+    receives focus.
+
+* xspec-show-modal-focusing-steps.html
+    This includes the polyfill with additions and verifies that the dialog
+    receives focus.
+
+### Demos
 
 * demo.html
     This serves as a demo page for the `<dialog>` polyfill with extra

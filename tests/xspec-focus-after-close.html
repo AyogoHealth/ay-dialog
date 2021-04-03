@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<meta charset=urf-8>
+<meta name=viewport content="width=device-width,initial-scale=1">
+<title>Test focus is moved to the previously focused element when dialog is closed</title>
+<script src="./dist/index.js"></script>
+<script src="/resources/testharness.js"></script>
+<script src="/resources/testharnessreport.js"></script>
+
+<body>
+<input />
+<dialog>
+</dialog>
+<script>
+
+// Test focus is moved to the previously focused element
+function test_move_to_previously_focused(showModal) {
+  const input = document.querySelector("input");
+  input.focus();
+  const dialog = document.querySelector('dialog');
+  if (showModal) {
+    dialog.showModal();
+  } else {
+    dialog.show();
+  }
+  dialog.close();
+
+  assert_equals(document.activeElement, input);
+}
+
+// Test focus is moved to <body> if the previously focused
+// element can't be focused
+function test_move_to_body_if_fails(showModal) {
+  const input = document.querySelector("input");
+  input.focus();
+  const dialog = document.querySelector('dialog');
+  if (showModal) {
+    dialog.showModal();
+  } else {
+    dialog.show();
+  }
+  dialog.close();
+  input.remove();
+  assert_equals(document.activeElement, document.body);
+  document.body.appendChild(input);
+}
+
+// Test focus is moved to shadow host if the previously
+// focused element is a shadow node.
+function test_move_to_shadow_host(showModal) {
+  const shadowHost = document.createElement("div");
+
+  const shadowRoot = shadowHost.attachShadow({mode: 'open'});
+  shadowRoot.appendChild(document.createElement("input"));
+
+  document.body.appendChild(shadowHost);
+  shadowRoot.querySelector("input").focus();
+
+  assert_equals(document.activeElement, shadowHost);
+
+  console.log(document.activeElement);
+  const dialog = document.querySelector('dialog');
+  if (showModal) {
+    dialog.showModal();
+  } else {
+    dialog.show();
+  }
+  dialog.close();
+
+  assert_equals(document.activeElement, shadowHost);
+}
+
+// Test moving the focus doesn't scroll the viewport
+function test_move_focus_dont_scroll_viewport(showModal) {
+  const outViewPortButton = document.createElement("button");
+  outViewPortButton.style.top = (window.innerHeight + 10).toString() + "px";
+  outViewPortButton.style.position = "absolute";
+  document.body.appendChild(outViewPortButton);
+
+  outViewPortButton.focus();
+  // Since the outViewPortButton is focused, so the viewport should be
+  // scrolled to it
+  assert_true(document.documentElement.scrollTop > 0 );
+
+  const dialog = document.querySelector('dialog');
+  if (showModal) {
+    dialog.showModal();
+  } else {
+    dialog.show();
+  }
+
+  window.scrollTo(0, 0);
+  assert_equals(document.documentElement.scrollTop, 0);
+
+  dialog.close();
+  assert_equals(document.documentElement.scrollTop, 0);
+
+  assert_equals(document.activeElement, outViewPortButton);
+}
+
+test(function() {
+    test_move_to_previously_focused(true);
+    test_move_to_previously_focused(false);
+}, 'Focus should be moved to the previously focused element');
+
+test(function() {
+    test_move_to_body_if_fails(true);
+    test_move_to_body_if_fails(false);
+}, 'Focus should be moved to the body if the previously focused element is removed');
+
+test(function() {
+    test_move_to_shadow_host(true);
+    test_move_to_shadow_host(false);
+}, 'Focus should be moved to the shadow DOM host if the previouly focused element is a shadow DOM node');
+
+test(function() {
+    test_move_focus_dont_scroll_viewport(true);
+    test_move_focus_dont_scroll_viewport(false);
+}, 'Focus should not scroll if the previously focused element is outside the viewport');
+
+</script>
+</body>

@@ -19,6 +19,31 @@
  * IN THE SOFTWARE.
  */
 
+import { dialogFocusSteps } from './dialog_element.js';
+
+const hasWeakMap = ('WeakMap' in window);
+const hasWeakSet = ('WeakSet' in window);
+
+// Map of dialogs to their trigger element for refocusing
+const prevFocusMap : WeakMap<HTMLDialogElement, HTMLElement> = hasWeakMap ? new WeakMap() : new Map();
+
+// Set of dialogs that we've added tabIndex to
+const tabIndexSet : WeakSet<HTMLDialogElement> = hasWeakSet ? new WeakSet() : new Set();
+
+
+function findFocusedElement(root : Document|ShadowRoot) : HTMLElement|null {
+  let active = root.activeElement as HTMLElement;
+
+  if (active && active.shadowRoot) {
+    const subActive = findFocusedElement(active.shadowRoot);
+    if (subActive) {
+      active = subActive;
+    }
+  }
+
+  return active;
+}
+
 function backdropClickHandler(evt : MouseEvent) {
   if (!evt.target) {
     return;
@@ -67,53 +92,73 @@ declare class WebComponentizedDialog extends HTMLDialogElement {
 }
 
 export default function (DialogElement : typeof WebComponentizedDialog) {
-  // Set the undocumented property to keep focus on the dialog when opening
-  Object.defineProperty(DialogElement, '_focusChildrenOnOpen', {
-    enumerable: false,
-    configurable: false,
-    value: true
-  });
+  // Overriding behaviour for showModal():
+  //
+  // * Store the previously focused element
+  const _show = DialogElement.prototype.show;
+  DialogElement.prototype.show = function(this : HTMLDialogElement) {
+    const origFocus = findFocusedElement(document);
+    if (origFocus) {
+      prevFocusMap.set(this, origFocus);
+    }
+
+    _show.apply(this, arguments as any);
+  };
 
 
   // Overriding behaviour for showModal():
   //
+  // * Add tabindex to force the dialog to be focusable
+  // * Store the previously focused element
   // * Ensure clicking the backdrop will close the modal
+  // * Focus the dialog rather than the first focusable child
   const _showModal = DialogElement.prototype.showModal;
   DialogElement.prototype.showModal = function(this : HTMLDialogElement) {
+    if (!this.hasAttribute('tabindex')) {
+      tabIndexSet.add(this);
+      this.tabIndex = 0;
+    }
+
+    const origFocus = findFocusedElement(document);
+    if (origFocus) {
+      prevFocusMap.set(this, origFocus);
+    }
+
     _showModal.apply(this, arguments as any);
 
     this.addEventListener('click', backdropClickHandler);
+    dialogFocusSteps(this, false);
   };
 
 
   // Overriding behaviour for close():
   //
+  // * Undo any tabIndex hackery from showModal
   // * Remove the backdrop click event listener
+  // * Try to restore focus to the previously focused element
   const _close = DialogElement.prototype.close;
   DialogElement.prototype.close = function(this : HTMLDialogElement) {
     _close.apply(this, arguments as any);
 
+    if (tabIndexSet.has(this)) {
+      this.removeAttribute('tabIndex');
+      tabIndexSet.delete(this);
+    }
+
     this.removeEventListener('click', backdropClickHandler);
+
+    if (prevFocusMap.has(this)) {
+      const prevFocus = prevFocusMap.get(this);
+      prevFocusMap.delete(this);
+
+      if (prevFocus && prevFocus.focus) {
+        prevFocus.focus({ preventScroll: true });
+      }
+    }
   };
 
 
-  // Overriding behaviour for connectedCallback(): (if it exists)
-  //
-  // * Add tabindex to force the dialog to be focusable
-  const _connectedCallback = DialogElement.prototype.connectedCallback;
-  if (_connectedCallback) {
-    DialogElement.prototype.connectedCallback = function(this : HTMLDialogElement) {
-      _connectedCallback.apply(this, arguments as any);
-
-      // Ensure the dialog is focusable
-      if (!this.hasAttribute('tabindex')) {
-        this.tabIndex = -1;
-      }
-    };
-  }
-
-
-  // Overriding behaviour for disconnectedCallback(): (if it exists)
+  // Overriding behaviour for disconnectedCallback(), if it exists:
   //
   // * Remove the backdrop click event listener
   const _disconnectedCallback = DialogElement.prototype.disconnectedCallback;
