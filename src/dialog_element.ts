@@ -44,6 +44,24 @@ const POLYFILL_STYLES = [
   '    isolation: isolate;',
   '}',
   '',
+  // These styles only apply to modal dialogs, but need to have low CSS
+  // specificity so they can be overridden. Modal dialogs are the more common
+  // case, so we'll set them here and then unset them for non-modal dialogs.
+  //
+  // It's far from ideal, but the spec uses a pseudoclass for this and we don't
+  // have that option. Using the attribute to set these styles gives them
+  // higher specificity and overrides global dialog styles on the page.
+  'dialog, ay-dialog {',
+  '    max-width: calc(100% - 6px - 2em);',
+  '    max-height: calc(100% - 6px - 2em);',
+  '}',
+  '',
+  'dialog:not([' + RANDOM_MODAL_KEY + ']),',
+  'ay-dialog:not([' + RANDOM_MODAL_KEY + ']) {',
+  '    max-width: none;',
+  '    max-height: none;',
+  '}',
+  '',
   'dialog[' + RANDOM_MODAL_KEY + '],',
   'ay-dialog[' + RANDOM_MODAL_KEY + '] {',
   '    position: fixed;',
@@ -52,8 +70,6 @@ const POLYFILL_STYLES = [
   '    inset-block-start: 0;',
   '    bottom: 0;',
   '    inset-block-end: 0;',
-  '    max-width: calc(100% - 6px - 2em);',
-  '    max-height: calc(100% - 6px - 2em);',
   '    -webkit-overflow-scrolling: touch;',
   '}'
 ].join('\n');
@@ -593,7 +609,7 @@ Object.defineProperty(AyDialogElement.prototype, 'connectedCallback', {
       initialized = true;
 
       if (getComputedStyle(this).position !== 'absolute') {
-        addStyles(POLYFILL_STYLES + DIALOG_STYLES);
+        addStyles(POLYFILL_STYLES + '\n\n' + DIALOG_STYLES);
       } else {
         addStyles(POLYFILL_STYLES);
       }
