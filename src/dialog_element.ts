@@ -322,6 +322,23 @@ function escapeKeyHandler(evt : KeyboardEvent) {
 }
 
 
+// Handler for form submissions inside the dialog
+function formSubmissionHandler(this : HTMLDialogElement, evt : Event) {
+  const form = evt.target as HTMLFormElement;
+
+  console.log("Submitting a form", form);
+  console.log("Form method is " + form.getAttribute("method"));
+
+  const submitter = (evt as any).submitter || document.activeElement;
+
+  if (form && form.getAttribute("method") === "dialog") {
+    evt.preventDefault();
+
+    this.close((submitter && submitter.value) || "");
+  }
+}
+
+
 // Ensure elements that are not in the top layer are not accessible
 function applyInertness() {
   // Loop over all the elements, *except* the top one
@@ -409,6 +426,7 @@ function AyDialogElement(this : HTMLDialogElement) {
   } catch(e) { }
 
   _this.addEventListener('keydown', escapeKeyHandler);
+  _this.addEventListener('submit', formSubmissionHandler.bind(this));
 
   return _this;
 }
