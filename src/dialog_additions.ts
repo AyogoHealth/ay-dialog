@@ -19,10 +19,7 @@
  * IN THE SOFTWARE.
  */
 
-import { dialogFocusSteps } from './dialog_element.js';
-
-const hasWeakMap = ('WeakMap' in window);
-const hasWeakSet = ('WeakSet' in window);
+import { hasWeakMap, hasWeakSet, dialogFocusSteps } from './dialog_element.js';
 
 // Map of dialogs to their trigger element for refocusing
 const prevFocusMap : WeakMap<HTMLDialogElement, HTMLElement> = hasWeakMap ? new WeakMap() : new Map();

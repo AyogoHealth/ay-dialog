@@ -132,7 +132,8 @@ const focusableElements = [
   'video[controls]:not([tabindex^="-"]):not([inert])'
 ].join(',');
 
-const hasWeakMap = ('WeakMap' in window);
+export const hasWeakMap = ('WeakMap' in window);
+export const hasWeakSet = ('WeakSet' in window);
 
 // Map of dialog return values (for IDL safety)
 const retValMap : WeakMap<HTMLDialogElement, string>          = hasWeakMap ? new WeakMap() : new Map();
@@ -145,6 +146,9 @@ const sentinelMap : WeakMap<HTMLDialogElement, HTMLElement>   = hasWeakMap ? new
 
 // Map of top layer elements to their original aria-hidden value
 const origAriaHidden : WeakMap<HTMLElement, string|null>      = hasWeakMap ? new WeakMap() : new Map();
+
+// Map of top layer elements to their original inert value
+const origInertMap : WeakMap<HTMLElement, boolean>            = hasWeakMap ? new WeakMap() : new Map();
 
 // Stack of the "top layer" elements
 const topLayerStack : Array<HTMLElement> = [];
@@ -328,6 +332,10 @@ function applyInertness() {
       origAriaHidden.set(el, el.getAttribute('aria-hidden'));
       el.setAttribute('aria-hidden', 'true');
     }
+    if (!origInertMap.has(el)) {
+      origInertMap.set(el, el.hasAttribute('inert'));
+      el.setAttribute('inert', '');
+    }
 
     const active = document.activeElement;
     if (el.contains(active)) {
@@ -348,6 +356,15 @@ function applyInertness() {
       topEl.removeAttribute('aria-hidden');
     }
     origAriaHidden.delete(topEl);
+  }
+  if (origInertMap.has(topEl)) {
+    const value = origInertMap.get(topEl);
+    if (value) {
+      topEl.setAttribute('inert', '');
+    } else {
+      topEl.removeAttribute('inert');
+    }
+    origInertMap.delete(topEl);
   }
 }
 
