@@ -27,6 +27,14 @@ const prevFocusMap : WeakMap<HTMLDialogElement, HTMLElement> = hasWeakMap ? new 
 // Set of dialogs that we've added tabIndex to
 const tabIndexSet : WeakSet<HTMLDialogElement> = hasWeakSet ? new WeakSet() : new Set();
 
+// Map of elements to their scroll positions and style attr when they become inert
+const scrollPosMap : WeakMap<HTMLElement, [number, number, string|null]> = hasWeakMap ? new WeakMap() : new Map();
+
+// Stack of the "top layer" elements -- can't reuse the one in dialog_element
+// because we might be adding behaviour to a native dialog instead of our
+// polyfill implementation :(
+const topLayerStack : Array<HTMLElement> = [];
+
 
 function findFocusedElement(root : Document|ShadowRoot) : HTMLElement|null {
   let active = root.activeElement as HTMLElement;
@@ -78,6 +86,48 @@ function backdropClickHandler(evt : MouseEvent) {
   });
 }
 
+function captureScrollState(dialog : HTMLDialogElement) {
+  if (topLayerStack.length === 0) {
+    topLayerStack.push(<HTMLElement>document.scrollingElement || document.querySelector('body'));
+  }
+
+  const beforeTop = topLayerStack[topLayerStack.length - 1];
+  const scrollTop = beforeTop.scrollTop;
+  const scrollLeft = beforeTop.scrollLeft;
+  scrollPosMap.set(beforeTop, [scrollTop, scrollLeft, beforeTop.getAttribute('style')]);
+
+  if (beforeTop.scrollHeight > document.documentElement.clientHeight) {
+    beforeTop.style.position = 'fixed';
+    beforeTop.style.left = `${-scrollLeft}px`;
+    beforeTop.style.top = `${-scrollTop}px`;
+  }
+
+  topLayerStack.push(dialog);
+}
+
+function restoreScrollState(dialog : HTMLDialogElement) {
+  const idx = topLayerStack.indexOf(dialog);
+  if (idx >= 0) {
+    topLayerStack.splice(idx, 1);
+  }
+
+  const newTop = topLayerStack[topLayerStack.length - 1];
+  if (idx >= 0 && scrollPosMap.has(newTop)) {
+    const [scrollTop, scrollLeft, style] = scrollPosMap.get(newTop)!;
+
+    if (style) {
+      newTop.setAttribute('style', style);
+    } else {
+      newTop.removeAttribute('style');
+    }
+
+    newTop.scrollTop = scrollTop;
+    newTop.scrollLeft = scrollLeft;
+
+    scrollPosMap.delete(newTop);
+  }
+}
+
 
 declare class WebComponentizedDialog extends HTMLDialogElement {
   static readonly observedAttributes? : Array<string>;
@@ -107,6 +157,7 @@ export default function (DialogElement : typeof WebComponentizedDialog) {
   //
   // * Add tabindex to force the dialog to be focusable
   // * Store the previously focused element
+  // * Capture scroll position and prevent scrolling
   // * Ensure clicking the backdrop will close the modal
   // * Focus the dialog rather than the first focusable child
   const _showModal = DialogElement.prototype.showModal;
@@ -121,6 +172,8 @@ export default function (DialogElement : typeof WebComponentizedDialog) {
       prevFocusMap.set(this, origFocus);
     }
 
+    captureScrollState(this);
+
     _showModal.apply(this, arguments as any);
 
     this.addEventListener('click', backdropClickHandler);
@@ -133,6 +186,7 @@ export default function (DialogElement : typeof WebComponentizedDialog) {
   // * Undo any tabIndex hackery from showModal
   // * Remove the backdrop click event listener
   // * Try to restore focus to the previously focused element
+  // * Restore the previous scroll position
   const _close = DialogElement.prototype.close;
   DialogElement.prototype.close = function(this : HTMLDialogElement) {
     _close.apply(this, arguments as any);
@@ -152,6 +206,8 @@ export default function (DialogElement : typeof WebComponentizedDialog) {
         prevFocus.focus({ preventScroll: true });
       }
     }
+
+    restoreScrollState(this);
   };
 
 
