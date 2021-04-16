@@ -2,7 +2,7 @@
 <html>
 <head>
 <meta charset=utf-8>
-<script src="./dist/polyfill.js"></script>
+<script src="./dist/index.js"></script>
 <script src="/resources/testharness.js"></script>
 <script src="/resources/testharnessreport.js"></script>
 <script src="./resources/common.js"></script>
@@ -20,7 +20,7 @@ promise_test(function() {
         // Test that focus goes to body if the dialog has no focusable elements, including itself
         var outerDialog = document.getElementById('outer-dialog');
         outerDialog.showModal();
-        assert_equals(document.activeElement, document.body);
+        assert_equals(document.activeElement, outerDialog);
 
         // Test that an autofocus element in the dialog gets focus.
         var dialog = document.getElementById('dialog');
@@ -29,11 +29,10 @@ promise_test(function() {
         assert_equals(document.activeElement, autofocusButton);
         dialog.close();
 
-        // ... or else first focusable element in the dialog gets focus.
+        // Focusable elements without autofocus should not gain focus
         autofocusButton.parentNode.removeChild(autofocusButton);
         dialog.showModal();
-        firstButton = document.getElementById('first-button');
-        assert_equals(document.activeElement, firstButton);
+        assert_equals(document.activeElement, dialog);
         dialog.close();
 
         // ... or else the dialog itself gets focus.;

@@ -1,20 +1,20 @@
 'use strict';
 
 function waitForEvent(target, type, options) {
-  return new Promise((resolve, reject) => {
+  return new Promise(function(resolve, reject) {
     target.addEventListener(type, resolve, options);
   });
 }
 
 function waitForAnimationFrame(w) {
   let targetWindow = w || window;
-  return new Promise((resolve, reject) => {
+  return new Promise(function(resolve, reject) {
     targetWindow.requestAnimationFrame(resolve);
   });
 }
 
 function waitForEvent(target, type, options) {
-  return new Promise((resolve, reject) => {
+  return new Promise(function(resolve, reject) {
     target.addEventListener(type, resolve, options);
   });
 }
@@ -24,7 +24,7 @@ function waitForLoad(target) {
 }
 
 function timeOut(test, ms) {
-  return new Promise((resolve, reject) => {
+  return new Promise(function(resolve, reject) {
     test.step_timeout(resolve, ms);
   });
 }

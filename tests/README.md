@@ -6,7 +6,7 @@ Element, along with some extra test cases and demo pages.
 To try these in a browser, run `npm run test-server` and navigate to
 http://localhost:1337/tests/
 
-**Last imported from wpt:** 2020-08-15
+**Last imported from wpt:** 2021-03-31
 
 ### Modifications
 
@@ -15,24 +15,25 @@ additionally modified as follows:
 
 * abspos-dialog-layout.html
     * Added `meta charset=utf-8`
+    * Fixed style reset code
 
 * centering.html
     * Changed arrow functions to `function` notation for IE11
     * Changed backtick strings to quoted strings for IE11
-    * Wrapped `inline-inset-*` checks conditionally for IE11
+    * Changed for...of to for loop for IE11
 
 * dialog.html
     * Added `meta charset=utf-8`
     * Changed arrow functions to `function` notation for IE11
     * Changed backtick strings to quoted strings for IE11
+    * Changed for...of to for loop for IE11
     * Replaced `fit-content` check with regex for Firefox
-    * Commented out `height: fit-content` check for buggy Firefox UA styles
 
 * dialog-autofocus-just-once.html
     * Added `meta charset=utf-8`
     * Altered utils.js path to local subfolder
     * Changed arrow functions to `function` notation for IE11
-    * Changes `async`/`await` syntax to use `Promises`
+    * Changed `async`/`await` syntax to use `Promises`
 
 * dialog-autofocus-multiple-times.html
     * Changed arrow functions to `function` notation for IE11
@@ -55,19 +56,15 @@ additionally modified as follows:
     * Added `meta charset=utf-8`
     * Altered utils.js path to local subfolder
     * Changed arrow functions to `function` notation for IE11
-    * Changes `async`/`await` syntax to use `Promises`
+    * Changed `async`/`await` syntax to use `Promises`
 
 * dialog-form-submission.html
     * Changed arrow functions to `function` notation for IE11
-    * Changes `async`/`await` syntax to use `Promises`
+    * Changed `async`/`await` syntax to use `Promises`
     * **NOTE:** WebDriver-requiring tests are commented out
 
 * dialog-return-value.html
     * Added `meta charset=utf-8`
-
-* dialog-scrolled-viewport.html
-    * Added `meta charset=utf-8`
-    * Commented out assertion for dialog offsetParent being null
 
 * dialog-showModal-remove.html
     * Added `meta charset=utf-8`
@@ -84,10 +81,40 @@ additionally modified as follows:
 
 * show-modal-focusing-steps.html
     * Added `meta charset=utf-8`
-    * Commented out the first assertion due to buggy WebKit autofocus behaviour
+    * Manually set initial focus due to buggy WebKit autofocus behaviour
     * Changed arrow functions to `function` notation for IE11
 
-### Extra Tests & Demos
+* resources/common.js
+    * Set loaded based on document readyState (IE11 seems to fire load early)
+    * Workaround for IE11's lack of autofocus support
+
+* resources/utils.js
+    * Changed arrow functions to `function` notation for IE11
+
+### Extra/Proposed Web Platform Tests
+
+Most of these are taken from Firefox patches that have not landed in the WHATWG
+spec yet.
+
+* xspec-dialog-showModal.html
+    This includes the polyfill with additions and verifies that the dialog
+    receives focus.
+
+* xspec-focus-after-close.html
+    This includes the polyfill with additions and verifies that focus is
+    returned to the previous element when the dialog is closed.
+
+    * Changed input removal to work in IE11
+
+* xspec-inert-node-is-unfocusable.html
+    This includes the polyfill with additions and verifies that the dialog
+    receives focus.
+
+* xspec-show-modal-focusing-steps.html
+    This includes the polyfill with additions and verifies that the dialog
+    receives focus.
+
+### Demos
 
 * demo.html
     This serves as a demo page for the `<dialog>` polyfill with extra

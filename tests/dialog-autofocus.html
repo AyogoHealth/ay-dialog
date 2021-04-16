@@ -8,10 +8,12 @@
 <script>
 promise_test(function() {
   return waitUntilLoadedAndAutofocused().then(function() {
-        // 2019-11-11 - Commented out until Webkit autofocus behaviour is
+        // 2020-03-31 - Manually focused until Webkit autofocus behaviour is
         // resolved: https://bugs.webkit.org/show_bug.cgi?id=203139
-        //
-        //assert_equals(document.activeElement, document.getElementById("outer-button"));
+        if (document.activeElement !== document.getElementById("outer-button")) {
+            document.getElementById("outer-button").focus();
+        }
+        assert_equals(document.activeElement, document.getElementById("outer-button"));
 
         var dialog = document.getElementById('dialog');
         dialog.showModal();

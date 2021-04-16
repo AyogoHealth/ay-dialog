@@ -1,6 +1,6 @@
 function waitUntilLoadedAndAutofocused() {
   return new Promise(function(resolve) {
-      var loaded = false;
+      var loaded = document.readyState === "complete";
       var autofocused = false;
       window.addEventListener('load', function() {
           loaded = true;
@@ -14,5 +14,19 @@ function waitUntilLoadedAndAutofocused() {
           if (loaded)
               resolve();
       }, false);
+
+      // IE11 doesn't support autofocus
+      setTimeout(function() {
+        if (!autofocused) {
+          const el = document.querySelector('[autofocus]');
+          if (el) {
+            el.focus();
+          }
+
+          autofocused = true;
+          if (loaded)
+              resolve();
+        }
+      }, 10);
     });
 }

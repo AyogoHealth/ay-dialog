@@ -19,6 +19,9 @@
  * IN THE SOFTWARE.
  */
 
+// Use a unique attribute to indicate modal dialogs
+const RANDOM_MODAL_KEY = '__modal_' + (btoa(Math.random().toString()).slice(0, 5).toLowerCase());
+
 const POLYFILL_STYLES = [
   'dialog-sentinel {',
   '    display: none;',
@@ -27,21 +30,47 @@ const POLYFILL_STYLES = [
   'dialog-backdrop {',
   '    position: fixed;',
   '    top: 0;',
+  '    inset-block-start: 0;',
   '    left: 0;',
+  '    inset-inline-start: 0;',
   '    height: 100vh;',
   '    width: 100vw;',
   '    background: rgba(0, 0, 0, 0.1);',
-  '    display: flex;',
-  '    justify-content: center;',
-  '    justify-content: safe center;',
-  '    align-items: center;',
-  '    align-items: safe center;',
   '    overflow: auto;',
   '    overscroll-behavior: contain;',
   '    touch-action: none;',
   '    z-index: 2147483647;',
   '    -webkit-overflow-scrolling: touch;',
   '    isolation: isolate;',
+  '}',
+  '',
+  // These styles only apply to modal dialogs, but need to have low CSS
+  // specificity so they can be overridden. Modal dialogs are the more common
+  // case, so we'll set them here and then unset them for non-modal dialogs.
+  //
+  // It's far from ideal, but the spec uses a pseudoclass for this and we don't
+  // have that option. Using the attribute to set these styles gives them
+  // higher specificity and overrides global dialog styles on the page.
+  'dialog, ay-dialog {',
+  '    max-width: calc(100% - 6px - 2em);',
+  '    max-height: calc(100% - 6px - 2em);',
+  '}',
+  '',
+  'dialog:not([' + RANDOM_MODAL_KEY + ']),',
+  'ay-dialog:not([' + RANDOM_MODAL_KEY + ']) {',
+  '    max-width: none;',
+  '    max-height: none;',
+  '}',
+  '',
+  'dialog[' + RANDOM_MODAL_KEY + '],',
+  'ay-dialog[' + RANDOM_MODAL_KEY + '] {',
+  '    position: fixed;',
+  '    overflow: auto;',
+  '    top: 0;',
+  '    inset-block-start: 0;',
+  '    bottom: 0;',
+  '    inset-block-end: 0;',
+  '    -webkit-overflow-scrolling: touch;',
   '}'
 ].join('\n');
 
@@ -49,10 +78,10 @@ const DIALOG_STYLES = [
   'dialog, ay-dialog {',
   '    display: block;',
   '    position: absolute;',
-  '    top: auto;',
-  '    bottom: auto;',
-  '    left: auto;',
-  '    right: auto;',
+  '    left: 0;',
+  '    inset-inline-start: 0;',
+  '    right: 0;',
+  '    inset-inline-end: 0;',
   '    width: -webkit-fit-content;',
   '    width: -moz-fit-content;',
   '    width: fit-content;',
@@ -66,15 +95,12 @@ const DIALOG_STYLES = [
   '    inline-size: -moz-fit-content;',
   '    inline-size: fit-content;',
   '    margin: auto !important;',
-  '    max-height: 100vh;',
+  '    border: solid;',
   '    padding: 1em;',
   '    background: white;',
   '    background: -apple-system-text-background;',
   '    color: black;',
   '    color: text;',
-  '    border: solid;',
-  '    overflow: auto;',
-  '    -webkit-overflow-scrolling: touch;',
   '}',
   '',
   'dialog:focus, ay-dialog:focus {',
@@ -106,7 +132,8 @@ const focusableElements = [
   'video[controls]:not([tabindex^="-"]):not([inert])'
 ].join(',');
 
-const hasWeakMap = ('WeakMap' in window);
+export const hasWeakMap = ('WeakMap' in window);
+export const hasWeakSet = ('WeakSet' in window);
 
 // Map of dialog return values (for IDL safety)
 const retValMap : WeakMap<HTMLDialogElement, string>          = hasWeakMap ? new WeakMap() : new Map();
@@ -119,6 +146,9 @@ const sentinelMap : WeakMap<HTMLDialogElement, HTMLElement>   = hasWeakMap ? new
 
 // Map of top layer elements to their original aria-hidden value
 const origAriaHidden : WeakMap<HTMLElement, string|null>      = hasWeakMap ? new WeakMap() : new Map();
+
+// Map of top layer elements to their original inert value
+const origInertMap : WeakMap<HTMLElement, boolean>            = hasWeakMap ? new WeakMap() : new Map();
 
 // Stack of the "top layer" elements
 const topLayerStack : Array<HTMLElement> = [];
@@ -164,11 +194,13 @@ function addStyles(styles : string) {
 
 
 // Run dialog focusing steps
-function dialogFocusSteps(dialog : HTMLDialogElement, focusChild : boolean) {
+export function dialogFocusSteps(dialog : HTMLDialogElement, focusChild? : boolean) {
+  let control : HTMLElement | null = null;
+
+  // IE11 can't handle default param values
   if (focusChild === undefined) {
     focusChild = true;
   }
-  let control : HTMLElement | null = null;
 
   const autofocuses = dialog.querySelectorAll<HTMLElement>('[autofocus]:not(:disabled):not([tabindex^="-"]):not([inert])');
   for (let i = 0; i < autofocuses.length; i++) {
@@ -269,7 +301,7 @@ function escapeKeyHandler(evt : KeyboardEvent) {
 
   const dlg = (evt.target as HTMLElement).closest('dialog,ay-dialog') as HTMLDialogElement;
 
-  if (!dlg || !dlg.open || !backdropMap.has(dlg)) {
+  if (!dlg || !backdropMap.has(dlg)) {
     return;
   }
 
@@ -283,10 +315,27 @@ function escapeKeyHandler(evt : KeyboardEvent) {
 
   // Native events are dispatched asynchronously
   requestAnimationFrame(function() {
-    if (dlg.dispatchEvent(cancel)) {
+    if (dlg.dispatchEvent(cancel) && dlg.open) {
       dlg.close();
     }
   });
+}
+
+
+// Handler for form submissions inside the dialog
+function formSubmissionHandler(this : HTMLDialogElement, evt : Event) {
+  const form = evt.target as HTMLFormElement;
+
+  console.log("Submitting a form", form);
+  console.log("Form method is " + form.getAttribute("method"));
+
+  const submitter = (evt as any).submitter || document.activeElement;
+
+  if (form && form.getAttribute("method") === "dialog") {
+    evt.preventDefault();
+
+    this.close((submitter && submitter.value) || "");
+  }
 }
 
 
@@ -299,6 +348,10 @@ function applyInertness() {
     if (!origAriaHidden.has(el)) {
       origAriaHidden.set(el, el.getAttribute('aria-hidden'));
       el.setAttribute('aria-hidden', 'true');
+    }
+    if (!origInertMap.has(el)) {
+      origInertMap.set(el, el.hasAttribute('inert'));
+      el.setAttribute('inert', '');
     }
 
     const active = document.activeElement;
@@ -320,6 +373,15 @@ function applyInertness() {
       topEl.removeAttribute('aria-hidden');
     }
     origAriaHidden.delete(topEl);
+  }
+  if (origInertMap.has(topEl)) {
+    const value = origInertMap.get(topEl);
+    if (value) {
+      topEl.setAttribute('inert', '');
+    } else {
+      topEl.removeAttribute('inert');
+    }
+    origInertMap.delete(topEl);
   }
 }
 
@@ -364,6 +426,7 @@ function AyDialogElement(this : HTMLDialogElement) {
   } catch(e) { }
 
   _this.addEventListener('keydown', escapeKeyHandler);
+  _this.addEventListener('submit', formSubmissionHandler.bind(this));
 
   return _this;
 }
@@ -430,7 +493,7 @@ Object.defineProperty(AyDialogElement.prototype, 'show', {
 
     this.setAttribute('open', '');
 
-    dialogFocusSteps(this, (<any>AyDialogElement)._focusChildrenOnOpen);
+    dialogFocusSteps(this);
   }
 });
 
@@ -455,7 +518,7 @@ Object.defineProperty(AyDialogElement.prototype, 'showModal', {
     }
 
     this.setAttribute('open', '');
-
+    this.setAttribute(RANDOM_MODAL_KEY, '');
 
     if (!sentinelMap.has(this)) {
       const sentinel = this.ownerDocument!.createElement('dialog-sentinel');
@@ -481,7 +544,7 @@ Object.defineProperty(AyDialogElement.prototype, 'showModal', {
     topLayerStack.push(this);
     applyInertness();
 
-    dialogFocusSteps(this, (<any>AyDialogElement)._focusChildrenOnOpen);
+    dialogFocusSteps(this);
   }
 });
 
@@ -500,6 +563,7 @@ Object.defineProperty(AyDialogElement.prototype, 'close', {
     }
 
     this.removeAttribute('open');
+    this.removeAttribute(RANDOM_MODAL_KEY);
 
     const result = arguments && arguments[0];
 
@@ -555,18 +619,21 @@ Object.defineProperty(AyDialogElement.prototype, 'close', {
 
 
 // IE11 doesn't implement Element#remove, but the tests require it :\
-if (!('remove' in AyDialogElement.prototype)) {
-  Object.defineProperty(AyDialogElement.prototype, 'remove', {
-    configurable: true,
-    enumerable: true,
-    writable: true,
-    value: function(this : HTMLDialogElement) {
-      if (this.parentNode) {
-        this.parentNode.removeChild(this);
-      }
+// Also, mutation observers don't fire synchronously, so again for tests we're
+// going to forcibly define this so that it always runs the
+// disconnectedCallback to properly clean up the dialog element state :\
+Object.defineProperty(AyDialogElement.prototype, 'remove', {
+  configurable: true,
+  enumerable: true,
+  writable: true,
+  value: function(this : HTMLDialogElement) {
+    if (this.parentNode) {
+      this.parentNode.removeChild(this);
     }
-  });
-}
+
+    (<any> this)['disconnectedCallback']();
+  }
+});
 
 Object.defineProperty(AyDialogElement.prototype, 'connectedCallback', {
   configurable: true,
@@ -577,7 +644,7 @@ Object.defineProperty(AyDialogElement.prototype, 'connectedCallback', {
       initialized = true;
 
       if (getComputedStyle(this).position !== 'absolute') {
-        addStyles(POLYFILL_STYLES + DIALOG_STYLES);
+        addStyles(POLYFILL_STYLES + '\n\n' + DIALOG_STYLES);
       } else {
         addStyles(POLYFILL_STYLES);
       }
@@ -628,6 +695,8 @@ Object.defineProperty(AyDialogElement.prototype, 'disconnectedCallback', {
       topLayerStack.splice(idx, 1);
       applyInertness();
     }
+
+    this.removeAttribute(RANDOM_MODAL_KEY);
 
     if (sentinelMap.has(this)) {
       const sentinel = sentinelMap.get(this);
