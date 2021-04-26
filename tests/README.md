@@ -100,6 +100,11 @@ spec yet.
     This includes the polyfill with additions and verifies that the dialog
     receives focus.
 
+* xspec-dialog-showModal-removal.html
+    This includes the polyfill (sans additions) and verifies that if a dialog's
+    containing element is removed while the dialog is open, the sentinel node
+    properly causes the dialog to be removed from the page as well.
+
 * xspec-focus-after-close.html
     This includes the polyfill with additions and verifies that focus is
     returned to the previous element when the dialog is closed.

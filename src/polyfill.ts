@@ -98,6 +98,11 @@ function augmentElements(mutationList : Array<MutationRecord> | null, _obs: Muta
           for (let k = 0; k < children.length; k++) {
             DialogElement.prototype.disconnectedCallback.call(children[k]);
           }
+
+          const sentinels = el.querySelectorAll<HTMLElement>('dialog-sentinel');
+          for (let k = 0; k < sentinels.length; k++) {
+            (sentinels[k] as any).dialogOwner.remove();
+          }
         }
       }
     }

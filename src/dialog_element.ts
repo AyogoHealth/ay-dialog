@@ -522,6 +522,7 @@ Object.defineProperty(AyDialogElement.prototype, 'showModal', {
 
     if (!sentinelMap.has(this)) {
       const sentinel = this.ownerDocument!.createElement('dialog-sentinel');
+      (sentinel as any).dialogOwner = this;
       parentNode.insertBefore(sentinel, this);
 
       sentinelMap.set(this, sentinel);
