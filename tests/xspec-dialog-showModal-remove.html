@@ -18,12 +18,16 @@ async_test(function(t) {
   // The dialog element is now in top layer. Removing it should synchronously
   // remove it from top layer, but should leave it in a strange limbo state.
   dialog.addEventListener('close', t.unreached_func('close event'))
-  container.remove()
+  container.parentNode.removeChild(container)
   assert_true(dialog.open)
   // if an event was queued, it would fire before this timeout
   step_timeout(t.step_func_done(function() {
     assert_true(dialog.open)
-    assert_false(dialog.isConnected)
+    if ('isConnected' in dialog) {
+      assert_false(dialog.isConnected)
+    } else {
+      assert_false(dialog.ownerDocument.documentElement.contains(dialog))
+    }
     // pass if no close event was fired
   }))
 })

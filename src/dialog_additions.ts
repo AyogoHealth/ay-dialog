@@ -98,8 +98,8 @@ function captureScrollState(dialog : HTMLDialogElement) {
 
   if (beforeTop.scrollHeight > document.documentElement.clientHeight) {
     beforeTop.style.position = 'fixed';
-    beforeTop.style.left = `${-scrollLeft}px`;
-    beforeTop.style.top = `${-scrollTop}px`;
+    beforeTop.style.left = -scrollLeft + 'px';
+    beforeTop.style.top = -scrollTop + 'px';
   }
 
   topLayerStack.push(dialog);
@@ -113,7 +113,10 @@ function restoreScrollState(dialog : HTMLDialogElement) {
 
   const newTop = topLayerStack[topLayerStack.length - 1];
   if (idx >= 0 && scrollPosMap.has(newTop)) {
-    const [scrollTop, scrollLeft, style] = scrollPosMap.get(newTop)!;
+    const fields = scrollPosMap.get(newTop)!;
+    const scrollTop = fields[0];
+    const scrollLeft = fields[1];
+    const style = fields[2];
 
     if (style) {
       newTop.setAttribute('style', style);
