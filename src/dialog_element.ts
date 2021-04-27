@@ -394,7 +394,8 @@ function checkInertFocus(evt : FocusEvent) {
 
     // Edge case where a dialog is removed and then code is run before the
     // mutation observer kicks in
-    if (topEl.isConnected) {
+    const connected = (('isConnected' in topEl) && topEl.isConnected) || (topEl.ownerDocument!.documentElement.contains(topEl));
+    if (connected) {
       break;
     }
   }

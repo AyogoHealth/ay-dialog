@@ -93,7 +93,8 @@ function augmentElements(mutationList : Array<MutationRecord> | null, _obs: Muta
           DialogElement.prototype.disconnectedCallback.call(el as HTMLDialogElement);
         }
 
-        if (!el.isConnected) {
+        const connected = (('isConnected' in el) && el.isConnected) || (el.ownerDocument!.documentElement.contains(el));
+        if (!connected) {
           const children = el.querySelectorAll<HTMLDialogElement>('dialog[__defined]');
           for (let k = 0; k < children.length; k++) {
             DialogElement.prototype.disconnectedCallback.call(children[k]);
