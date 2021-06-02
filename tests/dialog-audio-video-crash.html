@@ -1,0 +1,11 @@
+<!DOCTYPE html>
+<link rel="help" href="https://crbug.com/1206122">
+<script src="./dist/polyfill.js"></script>
+
+<body onload=dlg.show()>
+<dialog id="dlg">
+  <audio></audio>
+  <video></video>
+</dialog>
+
+This test passes if it does not crash.

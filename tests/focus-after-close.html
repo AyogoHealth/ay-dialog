@@ -2,13 +2,19 @@
 <meta charset=urf-8>
 <meta name=viewport content="width=device-width,initial-scale=1">
 <title>Test focus is moved to the previously focused element when dialog is closed</title>
-<script src="./dist/index.js"></script>
+<script src="./dist/polyfill.js"></script>
 <script src="/resources/testharness.js"></script>
 <script src="/resources/testharnessreport.js"></script>
+<script src="/resources/testdriver.js"></script>
+<script src="/resources/testdriver-actions.js"></script>
+<script src="/resources/testdriver-vendor.js"></script>
 
 <body>
 <input />
 <dialog>
+    <button id="button1">This is a button1</button>
+    <button id="button2">This is a button2</button>
+    <button id="button3">This is a button3</button>
 </dialog>
 <script>
 
@@ -22,6 +28,30 @@ function test_move_to_previously_focused(showModal) {
   } else {
     dialog.show();
   }
+  dialog.close();
+
+  assert_equals(document.activeElement, input);
+}
+
+// Test focus is moved to the previously focused element with some complex dialog usage
+async function test_move_to_previously_focused_with_complex_dialog_usage(showModal) {
+  const input = document.querySelector("input");
+  input.focus();
+  const dialog = document.querySelector('dialog');
+  if (showModal) {
+    dialog.showModal();
+  } else {
+    dialog.show();
+  }
+
+  const button1 = document.getElementById("button1");
+  const button2 = document.getElementById("button2");
+  const button3 = document.getElementById("button3");
+
+  await test_driver.click(button1);
+  await test_driver.click(button2);
+  await test_driver.click(button3);
+
   dialog.close();
 
   assert_equals(document.activeElement, input);
@@ -53,11 +83,12 @@ function test_move_to_shadow_host(showModal) {
   shadowRoot.appendChild(document.createElement("input"));
 
   document.body.appendChild(shadowHost);
-  shadowRoot.querySelector("input").focus();
+  const inputElement = shadowRoot.querySelector("input");
+  inputElement.focus();
 
   assert_equals(document.activeElement, shadowHost);
+  assert_equals(shadowRoot.activeElement, inputElement);
 
-  console.log(document.activeElement);
   const dialog = document.querySelector('dialog');
   if (showModal) {
     dialog.showModal();
@@ -67,6 +98,7 @@ function test_move_to_shadow_host(showModal) {
   dialog.close();
 
   assert_equals(document.activeElement, shadowHost);
+  assert_equals(shadowRoot.activeElement, inputElement);
 }
 
 // Test moving the focus doesn't scroll the viewport
@@ -98,24 +130,32 @@ function test_move_focus_dont_scroll_viewport(showModal) {
 }
 
 test(function() {
-    test_move_to_previously_focused(true);
-    test_move_to_previously_focused(false);
-}, 'Focus should be moved to the previously focused element');
+  test_move_to_previously_focused(true);
+  test_move_to_previously_focused(false);
+}, 'Focus should be moved to the previously focused element(Simple dialog usage)');
+
+/*
+promise_test(function() {
+  return Promise.all([
+    test_move_to_previously_focused_with_complex_dialog_usage(true),
+    test_move_to_previously_focused_with_complex_dialog_usage(false)
+  ]);
+}, 'Focus should be moved to the previously focused element(Complex dialog usage)');
+*/
 
 test(function() {
-    test_move_to_body_if_fails(true);
-    test_move_to_body_if_fails(false);
+  test_move_to_body_if_fails(true);
+  test_move_to_body_if_fails(false);
 }, 'Focus should be moved to the body if the previously focused element is removed');
 
 test(function() {
-    test_move_to_shadow_host(true);
-    test_move_to_shadow_host(false);
+  test_move_to_shadow_host(true);
+  test_move_to_shadow_host(false);
 }, 'Focus should be moved to the shadow DOM host if the previouly focused element is a shadow DOM node');
 
 test(function() {
-    test_move_focus_dont_scroll_viewport(true);
-    test_move_focus_dont_scroll_viewport(false);
+  test_move_focus_dont_scroll_viewport(true);
+  test_move_focus_dont_scroll_viewport(false);
 }, 'Focus should not scroll if the previously focused element is outside the viewport');
-
 </script>
 </body>

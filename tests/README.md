@@ -6,7 +6,7 @@ Element, along with some extra test cases and demo pages.
 To try these in a browser, run `npm run test-server` and navigate to
 http://localhost:1337/tests/
 
-**Last imported from wpt:** 2021-03-31
+**Last imported from wpt:** 2021-07-15
 
 ### Modifications
 
@@ -70,6 +70,12 @@ additionally modified as follows:
     * Added `meta charset=utf-8`
     * Changed arrow functions to `function` notation for IE11
 
+* focus-after-close.html
+    * Changed `async`/`await` syntax to use `Promises`
+    * Changed arrow functions to `function` notation for IE11
+    * Changed input removal to work in IE11
+    * **NOTE:** WebDriver-requiring tests are commented out
+
 * inert-does-not-match-disabled-selector.html
     * Added `meta charset=utf-8`
 
@@ -104,12 +110,6 @@ spec yet.
     This includes the polyfill (sans additions) and verifies that if a dialog's
     containing element is removed while the dialog is open, the sentinel node
     properly causes the dialog to be removed from the page as well.
-
-* xspec-focus-after-close.html
-    This includes the polyfill with additions and verifies that focus is
-    returned to the previous element when the dialog is closed.
-
-    * Changed input removal to work in IE11
 
 * xspec-inert-node-is-unfocusable.html
     This includes the polyfill with additions and verifies that the dialog
